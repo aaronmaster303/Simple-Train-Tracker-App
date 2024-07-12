@@ -4,6 +4,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Header from './components/Header';
 import LinePicker from './components/LinePicker';
+import Toggle from './components/Toggle';
 
 const App = () => {
   const [selectedLine, setSelectedLine] = useState('Green-E');
@@ -58,11 +59,7 @@ const App = () => {
             lineList={lines}
             lineSelectedFunction={setSelectedLine}
           />
-          <View style={styles.switchContainer}>
-            <Text style={styles.switchLabel}>Train</Text>
-            <Switch value={isTrain} onValueChange={(value) => setIsTrain(value)} />
-            <Text style={styles.switchLabel}>Bus</Text>
-          </View>
+          <Toggle isTrain={isTrain} toggleSetFunction={setIsTrain} />
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[styles.button, !isInbound && styles.buttonActive]}
@@ -115,16 +112,6 @@ const styles = StyleSheet.create({
   dropdown: {
     marginBottom: 20,
     alignItems: 'center',
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  switchLabel: {
-    marginHorizontal: 10,
-    fontSize: 18,
   },
   buttonContainer: {
     flexDirection: 'row',
