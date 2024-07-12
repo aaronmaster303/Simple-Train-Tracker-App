@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
-const App: React.FC = () => {
+const App = () => {
   const [selectedLine, setSelectedLine] = useState('Green-E');
   const [isTrain, setIsTrain] = useState(true);
   const [isInbound, setIsInbound] = useState(true);
@@ -47,48 +47,52 @@ const App: React.FC = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <Text style={styles.header}>MBTA Train Tracker</Text>
-        <View style={styles.dropdown}>
-          <Text style={styles.dropdownLabel}>Select Line:</Text>
-          <RNPickerSelect
-            onValueChange={(value) => setSelectedLine(value)}
-            items={lines}
-            value={selectedLine}
-            style={pickerSelectStyles}
-          />
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <Text style={styles.header}>MBTA Train Tracker</Text>
+          <View style={styles.dropdown}>
+            <Text style={styles.dropdownLabel}>Select Line:</Text>
+            <RNPickerSelect
+              onValueChange={(value) => setSelectedLine(value)}
+              items={lines}
+              value={selectedLine}
+              style={pickerSelectStyles}
+            />
+          </View>
+          <View style={styles.switchContainer}>
+            <Text style={styles.switchLabel}>Train</Text>
+            <Switch value={isTrain} onValueChange={(value) => setIsTrain(value)} />
+            <Text style={styles.switchLabel}>Bus</Text>
+          </View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button, !isInbound && styles.buttonActive]}
+              onPress={() => setIsInbound(false)}>
+              <Text style={styles.buttonText}>Outbound ↑</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, isInbound && styles.buttonActive]}
+              onPress={() => setIsInbound(true)}>
+              <Text style={styles.buttonText}>Inbound ↓</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView>
+            {stations.map((station, index) => (
+              <View key={index} style={styles.stationContainer}>
+                <Text style={station.status ? styles.stationTextActive : styles.stationText}>
+                  {station.name}
+                </Text>
+                {station.status && (
+                  <Text style={styles.stationStatus}>{`(${station.status})`}</Text>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+          <Text style={styles.footer}>Displaying all train locations.</Text>
         </View>
-        <View style={styles.switchContainer}>
-          <Text style={styles.switchLabel}>Train</Text>
-          <Switch value={isTrain} onValueChange={(value) => setIsTrain(value)} />
-          <Text style={styles.switchLabel}>Bus</Text>
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, !isInbound && styles.buttonActive]}
-            onPress={() => setIsInbound(false)}>
-            <Text style={styles.buttonText}>Outbound ↑</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, isInbound && styles.buttonActive]}
-            onPress={() => setIsInbound(true)}>
-            <Text style={styles.buttonText}>Inbound ↓</Text>
-          </TouchableOpacity>
-        </View>
-        <ScrollView>
-          {stations.map((station, index) => (
-            <View key={index} style={styles.stationContainer}>
-              <Text style={station.status ? styles.stationTextActive : styles.stationText}>
-                {station.name}
-              </Text>
-              {station.status && <Text style={styles.stationStatus}>{`(${station.status})`}</Text>}
-            </View>
-          ))}
-        </ScrollView>
-        <Text style={styles.footer}>Displaying all train locations.</Text>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
