@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import Header from './components/Header';
+import LinePicker from './components/LinePicker';
 
 const App = () => {
   const [selectedLine, setSelectedLine] = useState('Green-E');
@@ -50,16 +52,12 @@ const App = () => {
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Text style={styles.header}>MBTA Train Tracker</Text>
-          <View style={styles.dropdown}>
-            <Text style={styles.dropdownLabel}>Select Line:</Text>
-            <RNPickerSelect
-              onValueChange={(value) => setSelectedLine(value)}
-              items={lines}
-              value={selectedLine}
-              style={pickerSelectStyles}
-            />
-          </View>
+          <Header text={'MBTA Train Tracker'} />
+          <LinePicker
+            selectedLine={selectedLine}
+            lineList={lines}
+            lineSelectedFunction={setSelectedLine}
+          />
           <View style={styles.switchContainer}>
             <Text style={styles.switchLabel}>Train</Text>
             <Switch value={isTrain} onValueChange={(value) => setIsTrain(value)} />
@@ -114,19 +112,9 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
   dropdown: {
     marginBottom: 20,
     alignItems: 'center',
-  },
-  dropdownLabel: {
-    fontSize: 16,
-    marginBottom: 10,
   },
   switchContainer: {
     flexDirection: 'row',
@@ -180,29 +168,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
-  },
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 8,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
   },
 });
 
