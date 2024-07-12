@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Switch, ScrollView } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+
 import Header from './components/Header';
 import LinePicker from './components/LinePicker';
 import Toggle from './components/Toggle';
+import Button from './components/Button';
 
 const App = () => {
   const [selectedLine, setSelectedLine] = useState('Green-E');
@@ -61,16 +62,16 @@ const App = () => {
           />
           <Toggle isTrain={isTrain} toggleSetFunction={setIsTrain} />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, !isInbound && styles.buttonActive]}
-              onPress={() => setIsInbound(false)}>
-              <Text style={styles.buttonText}>Outbound ↑</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, isInbound && styles.buttonActive]}
-              onPress={() => setIsInbound(true)}>
-              <Text style={styles.buttonText}>Inbound ↓</Text>
-            </TouchableOpacity>
+            <Button
+              text={'Outbound'}
+              isActive={!isInbound}
+              buttonPressedFunction={() => setIsInbound(false)}
+            />
+            <Button
+              text={'Inbound'}
+              isActive={isInbound}
+              buttonPressedFunction={() => setIsInbound(true)}
+            />
           </View>
           <ScrollView>
             {stations.map((station, index) => (
@@ -117,21 +118,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
-  },
-  button: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
-  },
-  buttonActive: {
-    backgroundColor: '#28a745',
-    borderColor: '#28a745',
-  },
-  buttonText: {
-    fontSize: 16,
-    color: '#fff',
   },
   stationContainer: {
     flexDirection: 'row',
