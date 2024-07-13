@@ -6,6 +6,8 @@ import Header from './components/Header';
 import LinePicker from './components/LinePicker';
 import Toggle from './components/Toggle';
 import Button from './components/Button';
+import StopList from './components/StopList';
+import Footer from './components/Footer';
 
 const App = () => {
   const [selectedLine, setSelectedLine] = useState('Green-E');
@@ -54,7 +56,7 @@ const App = () => {
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Header text={'MBTA Train Tracker'} />
+          <Header />
           <LinePicker
             selectedLine={selectedLine}
             lineList={lines}
@@ -73,19 +75,8 @@ const App = () => {
               buttonPressedFunction={() => setIsInbound(true)}
             />
           </View>
-          <ScrollView>
-            {stations.map((station, index) => (
-              <View key={index} style={styles.stationContainer}>
-                <Text style={station.status ? styles.stationTextActive : styles.stationText}>
-                  {station.name}
-                </Text>
-                {station.status && (
-                  <Text style={styles.stationStatus}>{`(${station.status})`}</Text>
-                )}
-              </View>
-            ))}
-          </ScrollView>
-          <Text style={styles.footer}>Displaying all train locations.</Text>
+          <StopList stationList={stations} />
+          <Footer isFailing={true} />
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -95,7 +86,7 @@ const App = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#28a745',
   },
   container: {
     flex: 1,
@@ -110,37 +101,10 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
   },
-  dropdown: {
-    marginBottom: 20,
-    alignItems: 'center',
-  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
-  },
-  stationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  stationText: {
-    fontSize: 18,
-  },
-  stationTextActive: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#28a745',
-  },
-  stationStatus: {
-    fontSize: 16,
-    color: '#28a745',
-  },
-  footer: {
-    textAlign: 'center',
-    marginTop: 20,
-    fontSize: 16,
   },
 });
 

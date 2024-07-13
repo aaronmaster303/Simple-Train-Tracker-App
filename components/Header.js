@@ -1,7 +1,7 @@
 import { StyleSheet, Text } from 'react-native';
 
-const Header = ({ text }) => {
-  return <Text style={styles.headerText}>{text}</Text>;
+const Header = () => {
+  return <Text style={styles.headerText}>MBTA Train Tracker</Text>;
 };
 
 const styles = StyleSheet.create({
