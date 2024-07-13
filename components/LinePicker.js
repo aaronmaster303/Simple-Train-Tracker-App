@@ -1,47 +1,26 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Picker from 'react-native-picker-select';
+import { Picker } from '@react-native-picker/picker';
 
 const LinePicker = ({ selectedLine, lineList, lineSelectedFunction }) => {
   return (
-    <View>
-      <Text style={styles.dropdownLabel}>Select Line:</Text>
+    <View style={styles.pickerContainer}>
       <Picker
         onValueChange={(value) => lineSelectedFunction(value)}
-        items={lineList}
-        value={selectedLine}
-        style={pickerSelectStyles}
-      />
+        selectedValue={selectedLine}
+        style={styles.picker}>
+        {lineList.map((line) => (
+          <Picker.Item key={line.value} label={line.label} value={line.value} />
+        ))}
+      </Picker>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  dropdownLabel: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 8,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+  pickerContainer: {
+    marginTop: -75,
+    marginBottom: -30,
+    overflow: 'hidden',
   },
 });
 
