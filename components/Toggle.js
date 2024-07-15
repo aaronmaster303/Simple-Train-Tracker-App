@@ -16,6 +16,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 20,
+    zIndex: 1,
+    backgroundColor: '#fff',
   },
   switchLabel: {
     marginHorizontal: 10,

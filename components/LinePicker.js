@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
 const LinePicker = ({ selectedLine, lineList, lineSelectedFunction }) => {
@@ -18,8 +18,8 @@ const LinePicker = ({ selectedLine, lineList, lineSelectedFunction }) => {
 
 const styles = StyleSheet.create({
   pickerContainer: {
-    marginTop: -75,
-    marginBottom: -30,
+    marginTop: -40,
+    marginBottom: -60,
     overflow: 'hidden',
   },
 });
