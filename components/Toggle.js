@@ -3,9 +3,9 @@ import { StyleSheet, Text, View, Switch } from 'react-native';
 const Toggle = ({ isTrain, toggleSetFunction }) => {
   return (
     <View style={styles.switchContainer}>
-      <Text style={styles.switchLabel}>Train</Text>
-      <Switch value={isTrain} onValueChange={(value) => toggleSetFunction(value)} />
       <Text style={styles.switchLabel}>Bus</Text>
+      <Switch value={isTrain} onValueChange={(value) => toggleSetFunction(value)} />
+      <Text style={styles.switchLabel}>Train</Text>
     </View>
   );
 };
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 22,
     zIndex: 1,
     backgroundColor: '#fff',
   },

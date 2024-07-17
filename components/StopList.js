@@ -1,15 +1,13 @@
 import { StyleSheet } from 'react-native';
 import { ScrollView, View, Text } from 'react-native';
 
-const StopList = ({ stationList }) => {
+const StopList = ({ stopList }) => {
   return (
     <ScrollView style={styles.scrollContainer}>
-      {stationList.map((station, index) => (
-        <View key={index} style={styles.stationContainer}>
-          <Text style={station.status ? styles.stationTextActive : styles.stationText}>
-            {station.name}
-          </Text>
-          {station.status && <Text style={styles.stationStatus}>{`(${station.status})`}</Text>}
+      {stopList.map((stop, index) => (
+        <View key={index} style={styles.stopContainer}>
+          <Text style={stop.status ? styles.stopTextActive : styles.stopText}>{stop.name}</Text>
+          {stop.status && <Text style={styles.stopStatus}>{`(${stop.status})`}</Text>}
         </View>
       ))}
     </ScrollView>
@@ -23,21 +21,21 @@ const styles = StyleSheet.create({
     borderBottomColor: 'black',
     borderBottomWidth: '1px',
   },
-  stationContainer: {
+  stopContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10,
   },
-  stationText: {
+  stopText: {
     fontSize: 18,
   },
-  stationTextActive: {
+  stopTextActive: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#28a745',
   },
-  stationStatus: {
+  stopStatus: {
     fontSize: 16,
     color: '#28a745',
   },

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
@@ -10,47 +10,55 @@ import StopList from './components/StopList';
 import Footer from './components/Footer';
 
 const App = () => {
+  const API_KEY = '2a9bf598d2584bda8a3aec32f176044e';
+
   const [selectedLine, setSelectedLine] = useState('Green-E');
   const [isTrain, setIsTrain] = useState(true);
   const [isInbound, setIsInbound] = useState(true);
+  const [lines, setLines] = useState([]);
+  const [fetchError, setFetchError] = useState(false);
+  const [stopList, setStopList] = useState([]);
 
-  const lines = [
-    { label: 'Green-E', value: 'Green-E' },
-    { label: 'Red', value: 'Red' },
-    { label: 'Blue', value: 'Blue' },
-    { label: 'Orange', value: 'Orange' },
-    { label: 'Green-B', value: 'Green-B' },
-    { label: 'Green-C', value: 'Green-C' },
-    { label: 'Green-D', value: 'Green-D' },
-  ];
+  useEffect(() => {
+    const url = `https://api-v3.mbta.com/routes?filter[type]=${
+      isTrain ? '0,1' : '3'
+    }&api_key=${API_KEY}`;
 
-  const stations = [
-    { name: 'Heath Street', status: '' },
-    { name: 'Back of the Hill', status: '' },
-    { name: 'Riverway', status: '' },
-    { name: 'Mission Park', status: '' },
-    { name: 'Fenwood Road', status: '' },
-    { name: 'Brigham Circle', status: 'Stopped at' },
-    { name: 'Longwood Medical Area', status: '' },
-    { name: 'Museum of Fine Arts', status: '' },
-    { name: 'Northeastern University', status: 'Stopped at' },
-    { name: 'Symphony', status: 'Stopped at' },
-    { name: 'Prudential', status: '' },
-    { name: 'Copley', status: '' },
-    { name: 'Arlington', status: '' },
-    { name: 'Boylston', status: '' },
-    { name: 'Park Street', status: 'Stopped at' },
-    { name: 'Government Center', status: '' },
-    { name: 'Haymarket', status: 'Incoming at' },
-    { name: 'North Station', status: '' },
-    { name: 'Science Park/West End', status: '' },
-    { name: 'Lechmere', status: '' },
-    { name: 'East Somerville', status: 'In transit to' },
-    { name: 'Gilman Square', status: '' },
-    { name: 'Magoun Square', status: '' },
-    { name: 'Ball Square', status: '' },
-    { name: 'Medford/Tufts', status: 'Incoming at' },
-  ];
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const allLines = data.data;
+        const lines = allLines.filter((line) => line.id != 'Mattapan');
+        setLines(lines.sort((a, b) => a.id - b.id));
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, [isTrain]);
+
+  useEffect(() => {
+    const url = `https://api-v3.mbta.com/stops?filter[route]=${selectedLine}&filter[direction_id]=1&api_key=${API_KEY}`;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        stops = data.data.map((stop) => ({
+          id: stop.id,
+          name: stop.attributes.name,
+        }));
+
+        setStopList(stops);
+        setFetchError(false);
+      } catch (error) {
+        setFetchError(true);
+      }
+    };
+
+    fetchData();
+  }, [selectedLine]);
 
   return (
     <SafeAreaProvider>
@@ -75,8 +83,8 @@ const App = () => {
               buttonPressedFunction={() => setIsInbound(true)}
             />
           </View>
-          <StopList stationList={stations} />
-          <Footer isFailing={true} />
+          <StopList stopList={stopList} />
+          <Footer isFailing={fetchError} />
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -86,7 +94,7 @@ const App = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#28a745',
+    backgroundColor: 'beige',
   },
   container: {
     flex: 1,

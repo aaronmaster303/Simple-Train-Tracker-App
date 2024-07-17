@@ -9,7 +9,7 @@ const LinePicker = ({ selectedLine, lineList, lineSelectedFunction }) => {
         selectedValue={selectedLine}
         style={styles.picker}>
         {lineList.map((line) => (
-          <Picker.Item key={line.value} label={line.label} value={line.value} />
+          <Picker.Item key={line.id} label={line.id} value={line.id} />
         ))}
       </Picker>
     </View>
