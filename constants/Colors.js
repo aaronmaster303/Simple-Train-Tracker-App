@@ -6,6 +6,11 @@ const lineColors = {
   'Green-C': { primary: '#008000', lighter: '#dcffdc' },
   'Green-D': { primary: '#008000', lighter: '#dcffdc' },
   'Green-E': { primary: '#008000', lighter: '#dcffdc' },
+  Bus: { primary: 'darkgray', lighter: 'lightgray' },
 };
 
-export default lineColors;
+const getColorsFromVehicleId = (id) => {
+  return lineColors[id] ? lineColors[id] : lineColors.Bus;
+};
+
+export default getColorsFromVehicleId;

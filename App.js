@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,6 +8,7 @@ import Toggle from './components/Toggle';
 import Button from './components/Button';
 import StopList from './components/StopList';
 import Footer from './components/Footer';
+import getColorsFromVehicleId from './constants/Colors';
 
 const App = () => {
   const API_KEY = '2a9bf598d2584bda8a3aec32f176044e';
@@ -18,6 +19,14 @@ const App = () => {
   const [lines, setLines] = useState([]);
   const [fetchError, setFetchError] = useState(false);
   const [stopList, setStopList] = useState([]);
+  const [lineColor, setLineColor] = useState(getColorsFromVehicleId('Green-E'));
+  const [vehicleLocations, setVehicleLocations] = useState();
+  const [counter, setCounter] = useState(0);
+
+  const selectedLineRef = useRef(selectedLine);
+  useEffect(() => {
+    selectedLineRef.current = selectedLine;
+  }, [selectedLine]);
 
   useEffect(() => {
     const url = `https://api-v3.mbta.com/routes?filter[type]=${
@@ -29,61 +38,120 @@ const App = () => {
         const response = await fetch(url);
         const data = await response.json();
         const allLines = data.data;
-        const lines = allLines.filter((line) => line.id != 'Mattapan');
+        const lines = allLines.filter((line) => line.id !== 'Mattapan');
         setLines(lines.sort((a, b) => a.id - b.id));
-      } catch (error) {}
-    };
-
-    fetchData();
-  }, [isTrain]);
-
-  useEffect(() => {
-    const url = `https://api-v3.mbta.com/stops?filter[route]=${selectedLine}&filter[direction_id]=1&api_key=${API_KEY}`;
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        stops = data.data.map((stop) => ({
-          id: stop.id,
-          name: stop.attributes.name,
-        }));
-
-        setStopList(stops);
-        setFetchError(false);
       } catch (error) {
-        setFetchError(true);
+        console.error('Error fetching lines:', error);
       }
     };
 
     fetchData();
-  }, [selectedLine]);
+    setCounter(0);
+  }, [isTrain]);
+
+  useEffect(() => {
+    const fetchStopList = async () => {
+      const url = `https://api-v3.mbta.com/stops?filter[route]=${selectedLineRef.current}&filter[direction_id]=1&api_key=${API_KEY}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const stops = data.data.map((stop) => ({
+          // id: stop.id,
+          name: stop.attributes.name,
+        }));
+
+        setStopList(stops);
+        setVehicleLocations([]);
+        setFetchError(false);
+      } catch (error) {
+        console.error('Error fetching stop list:', error);
+        setFetchError(true);
+      }
+    };
+
+    fetchStopList();
+    setLineColor(getColorsFromVehicleId(selectedLineRef.current));
+  }, [isTrain, selectedLine]);
+
+  useEffect(() => {
+    const fetchStopNameFromId = async (stopId) => {
+      const url = `https://api-v3.mbta.com/stops/${stopId}?api_key=${API_KEY}`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setFetchError(false);
+        return data.data.attributes.name;
+      } catch (error) {
+        console.error('Error fetching stop name:', error);
+        setFetchError(true);
+      }
+    };
+
+    const fetchTrainLocations = async () => {
+      const url = `https://api-v3.mbta.com/vehicles?filter[route]=${selectedLineRef.current}&filter[direction_id]=${1}&api_key=${API_KEY}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const vehicles = data.data;
+
+        if (vehicles.length > 0) {
+          const vehicleLocations = await Promise.all(
+            vehicles.map(async (vehicle) => {
+              const stopId = vehicle.relationships.stop.data.id;
+              const name = await fetchStopNameFromId(stopId);
+              const status = vehicle.attributes.current_status;
+              return { name, status };
+            }),
+          );
+          console.log(vehicleLocations);
+          setVehicleLocations(vehicleLocations);
+          setFetchError(false);
+        } else {
+          setFetchError(true);
+        }
+      } catch (error) {
+        console.error('Error fetching train locations:', error);
+        setFetchError(true);
+      }
+    };
+
+    const interval = setInterval(() => {
+      fetchTrainLocations();
+      setCounter((prevCounter) => prevCounter + 1);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [counter]);
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={[styles.safeArea, { backgroundColor: lineColor.lighter }]}>
         <View style={styles.container}>
           <Header />
           <LinePicker
-            selectedLine={selectedLine}
+            selectedLine={selectedLineRef.current}
             lineList={lines}
             lineSelectedFunction={setSelectedLine}
           />
-          <Toggle isTrain={isTrain} toggleSetFunction={setIsTrain} />
+          <Toggle isTrain={isTrain} toggleSetFunction={setIsTrain} lineColor={lineColor} />
           <View style={styles.buttonContainer}>
             <Button
               text={'Outbound'}
               isActive={!isInbound}
               buttonPressedFunction={() => setIsInbound(false)}
+              lineColor={lineColor}
             />
             <Button
               text={'Inbound'}
               isActive={isInbound}
               buttonPressedFunction={() => setIsInbound(true)}
+              lineColor={lineColor}
             />
           </View>
-          <StopList stopList={stopList} />
+          <StopList stopList={stopList} vehicleLocations={vehicleLocations} lineColor={lineColor} />
           <Footer isFailing={fetchError} />
         </View>
       </SafeAreaView>
@@ -94,7 +162,7 @@ const App = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: 'beige',
+    backgroundColor: '#ffd8a6',
   },
   container: {
     flex: 1,
