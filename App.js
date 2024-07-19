@@ -121,7 +121,7 @@ const App = () => {
             return { name, status };
           }),
         );
-        console.log(vehicleLocations);
+        // console.log(vehicleLocations);
         setVehicleLocations(vehicleLocations);
         setFetchError(false);
       } else {
