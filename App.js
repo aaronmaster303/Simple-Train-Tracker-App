@@ -14,6 +14,8 @@ const App = () => {
   const API_KEY = '2a9bf598d2584bda8a3aec32f176044e';
 
   const [selectedLine, setSelectedLine] = useState('Green-E');
+  const [selectedTrain, setSelectedTrain] = useState('Green-E');
+  const [selectedBus, setSelectedBus] = useState('39');
   const [isTrain, setIsTrain] = useState(true);
   const [isInbound, setIsInbound] = useState(true);
   const [lines, setLines] = useState([]);
@@ -27,10 +29,12 @@ const App = () => {
 
   useEffect(() => {
     selectedLineRef.current = selectedLine;
+    isTrain ? setSelectedTrain(selectedLine) : setSelectedBus(selectedLine);
   }, [selectedLine]);
 
   useEffect(() => {
     fetchVehicleList();
+    selectedLineRef.current = isTrain ? selectedTrain : selectedBus;
     setCounter(0);
   }, [isTrain]);
 
