@@ -53,6 +53,11 @@ const App = () => {
     return () => clearInterval(interval);
   }, [counter]);
 
+  useEffect(() => {
+    fetchTrainLocations();
+    setCounter(0);
+  }, [isInbound]);
+
   const fetchVehicleList = async () => {
     const url = `https://api-v3.mbta.com/routes?filter[type]=${
       isTrain ? '0,1' : '3'
@@ -76,13 +81,11 @@ const App = () => {
       const data = await response.json();
 
       const stops = data.data.map((stop) => ({
-        // id: stop.id,
         name: stop.attributes.name,
       }));
 
       setStopList(stops);
       setVehicleLocations([]);
-      setFetchError(false);
     } catch (error) {
       console.error('Error fetching stop list:', error);
       setFetchError(true);
@@ -94,7 +97,6 @@ const App = () => {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      setFetchError(false);
       return data.data.attributes.name;
     } catch (error) {
       console.error('Error fetching stop name:', error);
@@ -103,7 +105,7 @@ const App = () => {
   };
 
   const fetchTrainLocations = async () => {
-    const url = `https://api-v3.mbta.com/vehicles?filter[route]=${selectedLineRef.current}&filter[direction_id]=${1}&api_key=${API_KEY}`;
+    const url = `https://api-v3.mbta.com/vehicles?filter[route]=${selectedLineRef.current}&filter[direction_id]=${isInbound ? 1 : 0}&api_key=${API_KEY}`;
 
     try {
       const response = await fetch(url);
