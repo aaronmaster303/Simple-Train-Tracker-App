@@ -37,7 +37,7 @@ const StopList = ({ stopList, vehicleLocations, lineColor }) => {
                 style={[
                   styles.stopStatus,
                   { color: lineColor.primary },
-                ]}>{` (${statusStrings[stop.status]})`}</Text>
+                ]}>{` (${statusStrings[stop.status]}) `}</Text>
             </View>
           ) : (
             <View key={index} style={styles.stopContainer}>
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     color: '#28a745',
   },
   stopStatus: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#28a745',
   },
 });

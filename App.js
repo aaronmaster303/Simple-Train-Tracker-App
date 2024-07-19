@@ -146,13 +146,13 @@ const App = () => {
           <Toggle isTrain={isTrain} toggleSetFunction={setIsTrain} lineColor={lineColor} />
           <View style={styles.buttonContainer}>
             <Button
-              text={'Outbound'}
+              text={'↑'}
               isActive={!isInbound}
               buttonPressedFunction={() => setIsInbound(false)}
               lineColor={lineColor}
             />
             <Button
-              text={'Inbound'}
+              text={'↓'}
               isActive={isInbound}
               buttonPressedFunction={() => setIsInbound(true)}
               lineColor={lineColor}

@@ -17,7 +17,7 @@ const Button = ({ text, isActive, buttonPressedFunction, lineColor }) => {
 const styles = StyleSheet.create({
   button: {
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     shadowColor: 'darkgray',
     shadowRadius: 1,
     shadowOffset: 1,
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgray',
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 20,
     color: '#fff',
   },
 });
