@@ -2,9 +2,9 @@ import { StyleSheet } from 'react-native';
 import { ScrollView, View, Text } from 'react-native';
 
 const statusStrings = {
-  STOPPED_AT: 'Stopped at',
-  IN_TRANSIT_TO: 'In transit to',
-  INCOMING_AT: 'Incoming at',
+  STOPPED_AT: '⬣',
+  IN_TRANSIT_TO: '← (In transit to)',
+  INCOMING_AT: '←',
 };
 
 const StopList = ({ stopList, vehicleLocations, lineColor }) => {
@@ -37,7 +37,7 @@ const StopList = ({ stopList, vehicleLocations, lineColor }) => {
                 style={[
                   styles.stopStatus,
                   { color: lineColor.primary },
-                ]}>{` (${statusStrings[stop.status]}) `}</Text>
+                ]}>{` ${statusStrings[stop.status]} `}</Text>
             </View>
           ) : (
             <View key={index} style={styles.stopContainer}>
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     color: '#28a745',
   },
   stopStatus: {
-    fontSize: 16,
+    fontSize: 20,
     color: '#28a745',
   },
 });
