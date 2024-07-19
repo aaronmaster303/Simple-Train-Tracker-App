@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Header from './components/Header';
 import LinePicker from './components/LinePicker';
@@ -27,12 +28,76 @@ const App = () => {
 
   const selectedLineRef = useRef(selectedLine);
 
+  const getInitialData = async () => {
+    try {
+      const line = await AsyncStorage.getItem('selectedLine');
+      if (line !== null) {
+        setSelectedLine(line);
+      }
+    } catch (e) {
+      setSelectedLine('Green-E');
+      console.log('No previously selected line');
+    }
+
+    try {
+      const train = await AsyncStorage.getItem('selectedTrain');
+      if (train !== null) {
+        setSelectedTrain(train);
+      }
+    } catch (e) {
+      setSelectedTrain('Green-E');
+      console.log('No previously selected train');
+    }
+
+    try {
+      const bus = await AsyncStorage.getItem('selectedBus');
+      if (bus !== null) {
+        setSelectedBus(bus);
+      }
+    } catch (e) {
+      setSelectedBus('39');
+      console.log('No previously selected bus');
+    }
+
+    try {
+      const isTrainToggled = await AsyncStorage.getItem('isTrain');
+      if (isTrainToggled !== null) {
+        setIsTrain(isTrainToggled === 'true');
+      }
+    } catch (e) {
+      setIsTrain(true);
+      console.log('No isTrain toggled');
+    }
+  };
+
+  const storeData = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value.toString());
+    } catch (e) {
+      console.log('Failed to save data');
+    }
+  };
+
   useEffect(() => {
+    getInitialData();
+  }, []);
+
+  useEffect(() => {
+    storeData('selectedLine', selectedLine);
     selectedLineRef.current = selectedLine;
     isTrain ? setSelectedTrain(selectedLine) : setSelectedBus(selectedLine);
   }, [selectedLine]);
 
   useEffect(() => {
+    storeData('selectedBus', selectedBus);
+  }, [selectedBus]);
+
+  useEffect(() => {
+    storeData('selectedTrain', selectedTrain);
+  }, [selectedTrain]);
+
+  useEffect(() => {
+    storeData('isTrain', isTrain);
     fetchVehicleList();
     selectedLineRef.current = isTrain ? selectedTrain : selectedBus;
     setCounter(0);
