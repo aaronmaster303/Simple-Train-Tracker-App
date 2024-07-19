@@ -6,7 +6,7 @@ const lineColors = {
   'Green-C': { primary: '#008000', lighter: '#dcffdc' },
   'Green-D': { primary: '#008000', lighter: '#dcffdc' },
   'Green-E': { primary: '#008000', lighter: '#dcffdc' },
-  Bus: { primary: 'darkgray', lighter: 'lightgray' },
+  Bus: { primary: 'black', lighter: 'lightgray' },
 };
 
 const getColorsFromVehicleId = (id) => {

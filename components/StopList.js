@@ -23,39 +23,49 @@ const StopList = ({ stopList, vehicleLocations, lineColor }) => {
   const finalStopList = Array.from(map.values());
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      {finalStopList.map((stop, index) =>
-        stop.status ? (
-          <View key={index} style={[styles.stopContainer, { backgroundColor: lineColor.lighter }]}>
-            <Text style={[styles.stopText, styles.stopTextActive, { color: lineColor.primary }]}>
-              {stop.name}
-            </Text>
-            <Text
-              style={[
-                styles.stopStatus,
-                { color: lineColor.primary },
-              ]}>{`(${statusStrings[stop.status]})`}</Text>
-          </View>
-        ) : (
-          <View key={index} style={styles.stopContainer}>
-            <Text style={styles.stopText}>{stop.name}</Text>
-          </View>
-        ),
-      )}
-    </ScrollView>
+    <View style={styles.viewContainer}>
+      <ScrollView style={styles.scrollViewContainer} horizontal={false}>
+        {finalStopList.map((stop, index) =>
+          stop.status ? (
+            <View
+              key={index}
+              style={[styles.stopContainer, { backgroundColor: lineColor.lighter }]}>
+              <Text style={[styles.stopText, styles.stopTextActive, { color: lineColor.primary }]}>
+                {stop.name}
+              </Text>
+              <Text
+                style={[
+                  styles.stopStatus,
+                  { color: lineColor.primary },
+                ]}>{` (${statusStrings[stop.status]})`}</Text>
+            </View>
+          ) : (
+            <View key={index} style={styles.stopContainer}>
+              <Text style={styles.stopText}>{stop.name}</Text>
+            </View>
+          ),
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
+  viewContainer: {
+    flex: 1,
+    overflow: 'hidden',
     borderTopColor: 'black',
     borderTopWidth: '1px',
     borderBottomColor: 'black',
     borderBottomWidth: '1px',
   },
+  scrollViewContainer: {
+    flex: 1,
+  },
   stopContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
     alignItems: 'center',
     paddingVertical: 8,
     marginVertical: 2,

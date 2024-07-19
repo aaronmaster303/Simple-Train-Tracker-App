@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     shadowOffset: 1,
     shadowOpacity: 1,
-    borderRadius: 5,
+    borderRadius: 7,
   },
   buttonActive: {
     backgroundColor: '#28a745',
