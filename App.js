@@ -24,100 +24,23 @@ const App = () => {
   const [counter, setCounter] = useState(0);
 
   const selectedLineRef = useRef(selectedLine);
+
   useEffect(() => {
     selectedLineRef.current = selectedLine;
   }, [selectedLine]);
 
   useEffect(() => {
-    const url = `https://api-v3.mbta.com/routes?filter[type]=${
-      isTrain ? '0,1' : '3'
-    }&api_key=${API_KEY}`;
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const allLines = data.data;
-        const lines = allLines.filter((line) => line.id !== 'Mattapan');
-        setLines(lines.sort((a, b) => a.id - b.id));
-      } catch (error) {
-        console.error('Error fetching lines:', error);
-      }
-    };
-
-    fetchData();
+    fetchVehicleList();
     setCounter(0);
   }, [isTrain]);
 
   useEffect(() => {
-    const fetchStopList = async () => {
-      const url = `https://api-v3.mbta.com/stops?filter[route]=${selectedLineRef.current}&filter[direction_id]=1&api_key=${API_KEY}`;
-
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        const stops = data.data.map((stop) => ({
-          // id: stop.id,
-          name: stop.attributes.name,
-        }));
-
-        setStopList(stops);
-        setVehicleLocations([]);
-        setFetchError(false);
-      } catch (error) {
-        console.error('Error fetching stop list:', error);
-        setFetchError(true);
-      }
-    };
-
     fetchStopList();
+    fetchTrainLocations();
     setLineColor(getColorsFromVehicleId(selectedLineRef.current));
   }, [isTrain, selectedLine]);
 
   useEffect(() => {
-    const fetchStopNameFromId = async (stopId) => {
-      const url = `https://api-v3.mbta.com/stops/${stopId}?api_key=${API_KEY}`;
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        setFetchError(false);
-        return data.data.attributes.name;
-      } catch (error) {
-        console.error('Error fetching stop name:', error);
-        setFetchError(true);
-      }
-    };
-
-    const fetchTrainLocations = async () => {
-      const url = `https://api-v3.mbta.com/vehicles?filter[route]=${selectedLineRef.current}&filter[direction_id]=${1}&api_key=${API_KEY}`;
-
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        const vehicles = data.data;
-
-        if (vehicles.length > 0) {
-          const vehicleLocations = await Promise.all(
-            vehicles.map(async (vehicle) => {
-              const stopId = vehicle.relationships.stop.data.id;
-              const name = await fetchStopNameFromId(stopId);
-              const status = vehicle.attributes.current_status;
-              return { name, status };
-            }),
-          );
-          console.log(vehicleLocations);
-          setVehicleLocations(vehicleLocations);
-          setFetchError(false);
-        } else {
-          setFetchError(true);
-        }
-      } catch (error) {
-        console.error('Error fetching train locations:', error);
-        setFetchError(true);
-      }
-    };
-
     const interval = setInterval(() => {
       fetchTrainLocations();
       setCounter((prevCounter) => prevCounter + 1);
@@ -125,6 +48,84 @@ const App = () => {
 
     return () => clearInterval(interval);
   }, [counter]);
+
+  const fetchVehicleList = async () => {
+    const url = `https://api-v3.mbta.com/routes?filter[type]=${
+      isTrain ? '0,1' : '3'
+    }&api_key=${API_KEY}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      const allLines = data.data;
+      const lines = allLines.filter((line) => line.id !== 'Mattapan');
+      setLines(lines.sort((a, b) => a.id - b.id));
+    } catch (error) {
+      console.error('Error fetching lines:', error);
+    }
+  };
+
+  const fetchStopList = async () => {
+    const url = `https://api-v3.mbta.com/stops?filter[route]=${selectedLineRef.current}&filter[direction_id]=1&api_key=${API_KEY}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const stops = data.data.map((stop) => ({
+        // id: stop.id,
+        name: stop.attributes.name,
+      }));
+
+      setStopList(stops);
+      setVehicleLocations([]);
+      setFetchError(false);
+    } catch (error) {
+      console.error('Error fetching stop list:', error);
+      setFetchError(true);
+    }
+  };
+
+  const fetchStopNameFromId = async (stopId) => {
+    const url = `https://api-v3.mbta.com/stops/${stopId}?api_key=${API_KEY}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setFetchError(false);
+      return data.data.attributes.name;
+    } catch (error) {
+      console.error('Error fetching stop name:', error);
+      setFetchError(true);
+    }
+  };
+
+  const fetchTrainLocations = async () => {
+    const url = `https://api-v3.mbta.com/vehicles?filter[route]=${selectedLineRef.current}&filter[direction_id]=${1}&api_key=${API_KEY}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      const vehicles = data.data;
+
+      if (vehicles.length > 0) {
+        const vehicleLocations = await Promise.all(
+          vehicles.map(async (vehicle) => {
+            const stopId = vehicle.relationships.stop.data.id;
+            const name = await fetchStopNameFromId(stopId);
+            const status = vehicle.attributes.current_status;
+            return { name, status };
+          }),
+        );
+        console.log(vehicleLocations);
+        setVehicleLocations(vehicleLocations);
+        setFetchError(false);
+      } else {
+        setFetchError(true);
+      }
+    } catch (error) {
+      console.error('Error fetching train locations:', error);
+      setFetchError(true);
+    }
+  };
 
   return (
     <SafeAreaProvider>
