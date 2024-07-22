@@ -11,7 +11,7 @@ import Footer from './components/Footer';
 import getColorsFromVehicleId from './constants/Colors';
 
 const App = () => {
-  const API_KEY = '2a9bf598d2584bda8a3aec32f176044e';
+  const SERVER_BASE_URL = 'http://localhost:3000';
 
   const [selectedLine, setSelectedLine] = useState('Green-E');
   const [selectedTrain, setSelectedTrain] = useState('Green-E');
@@ -59,9 +59,7 @@ const App = () => {
   }, [isInbound]);
 
   const fetchVehicleList = async () => {
-    const url = `https://api-v3.mbta.com/routes?filter[type]=${
-      isTrain ? '0,1' : '3'
-    }&api_key=${API_KEY}`;
+    const url = `${SERVER_BASE_URL}/routes?filter[type]=${isTrain ? '0,1' : '3'}`;
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -74,7 +72,7 @@ const App = () => {
   };
 
   const fetchStopList = async () => {
-    const url = `https://api-v3.mbta.com/stops?filter[route]=${selectedLineRef.current}&filter[direction_id]=1&api_key=${API_KEY}`;
+    const url = `${SERVER_BASE_URL}/stops?filter[route]=${selectedLineRef.current}&filter[direction_id]=1`;
 
     try {
       const response = await fetch(url);
@@ -93,7 +91,7 @@ const App = () => {
   };
 
   const fetchStopNameFromId = async (stopId) => {
-    const url = `https://api-v3.mbta.com/stops/${stopId}?api_key=${API_KEY}`;
+    const url = `${SERVER_BASE_URL}/stops/${stopId}`;
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -105,7 +103,7 @@ const App = () => {
   };
 
   const fetchTrainLocations = async () => {
-    const url = `https://api-v3.mbta.com/vehicles?filter[route]=${selectedLineRef.current}&filter[direction_id]=${isInbound ? 1 : 0}&api_key=${API_KEY}`;
+    const url = `${SERVER_BASE_URL}/vehicles?filter[route]=${selectedLineRef.current}&filter[direction_id]=${isInbound ? 1 : 0}`;
 
     try {
       const response = await fetch(url);
@@ -121,7 +119,6 @@ const App = () => {
             return { name, status };
           }),
         );
-        // console.log(vehicleLocations);
         setVehicleLocations(vehicleLocations);
         setFetchError(false);
       } else {
