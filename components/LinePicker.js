@@ -7,7 +7,8 @@ const LinePicker = ({ selectedLine, lineList, lineSelectedFunction }) => {
       <Picker
         onValueChange={(value) => lineSelectedFunction(value)}
         selectedValue={selectedLine}
-        style={styles.picker}>
+        style={styles.picker}
+        itemStyle={styles.pickerItem}>
         {lineList.map((line) => (
           <Picker.Item key={line.id} label={line.id} value={line.id} />
         ))}
@@ -21,6 +22,9 @@ const styles = StyleSheet.create({
     marginTop: -40,
     marginBottom: -60,
     overflow: 'hidden',
+  },
+  pickerItem: {
+    fontSize: 20,
   },
 });
 
