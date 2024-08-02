@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { Text } from 'react-native';
 
 import Header from './components/Header';
 import LinePicker from './components/LinePicker';
@@ -8,6 +9,7 @@ import Toggle from './components/Toggle';
 import Button from './components/Button';
 import StopList from './components/StopList';
 import Footer from './components/Footer';
+import DirectionPicker from './components/DirectionPicker';
 import getColorsFromVehicleId from './constants/Colors';
 
 const App = () => {
@@ -141,20 +143,11 @@ const App = () => {
             lineSelectedFunction={setSelectedLine}
           />
           <Toggle isTrain={isTrain} toggleSetFunction={setIsTrain} lineColor={lineColor} />
-          <View style={styles.buttonContainer}>
-            <Button
-              text={'↑'}
-              isActive={!isInbound}
-              buttonPressedFunction={() => setIsInbound(false)}
-              lineColor={lineColor}
-            />
-            <Button
-              text={'↓'}
-              isActive={isInbound}
-              buttonPressedFunction={() => setIsInbound(true)}
-              lineColor={lineColor}
-            />
-          </View>
+          <DirectionPicker
+            isInbound={isInbound}
+            setIsInboundFunction={setIsInbound}
+            lineColor={lineColor}
+          />
           <StopList stopList={stopList} vehicleLocations={vehicleLocations} lineColor={lineColor} />
           <Footer isFailing={fetchError} />
         </View>
@@ -180,11 +173,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 5,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
   },
 });
 

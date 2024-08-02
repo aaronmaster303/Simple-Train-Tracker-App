@@ -1,12 +1,17 @@
 import { StyleSheet } from 'react-native';
 import { ScrollView, View, Text } from 'react-native';
 
-const statusStrings = {
-  STOPPED_AT: '⬣',
-  IN_TRANSIT_TO: '← (In transit to)',
-  INCOMING_AT: '←',
-};
+// const statusStrings = {
+//   STOPPED_AT: '⬣',
+//   IN_TRANSIT_TO: '← (In transit to)',
+//   INCOMING_AT: '←',
+// };
 
+const statusStrings = {
+  STOPPED_AT: '(Stopped at)',
+  IN_TRANSIT_TO: '(In transit to)',
+  INCOMING_AT: '(Incoming at)',
+};
 const StopList = ({ stopList, vehicleLocations, lineColor }) => {
   const map = new Map();
 
@@ -80,7 +85,7 @@ const styles = StyleSheet.create({
     color: '#28a745',
   },
   stopStatus: {
-    fontSize: 20,
+    fontSize: 18,
     color: '#28a745',
   },
 });
