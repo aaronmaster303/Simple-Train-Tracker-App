@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Text } from 'react-native';
 
 import Header from './components/Header';
 import LinePicker from './components/LinePicker';
 import Toggle from './components/Toggle';
-import Button from './components/Button';
 import StopList from './components/StopList';
 import Footer from './components/Footer';
 import DirectionPicker from './components/DirectionPicker';
@@ -41,7 +39,7 @@ const App = () => {
   }, [isTrain]);
 
   useEffect(() => {
-    fetchStopList();
+    isTrain ? fetchStopList() : fetchStopListBus();
     fetchTrainLocations();
     setLineColor(getColorsFromVehicleId(selectedLineRef.current));
   }, [isTrain, selectedLine]);
@@ -56,6 +54,9 @@ const App = () => {
   }, [counter]);
 
   useEffect(() => {
+    if (!isTrain) {
+      fetchStopListBus();
+    }
     fetchTrainLocations();
     setCounter(0);
   }, [isInbound]);
@@ -83,6 +84,25 @@ const App = () => {
       const stops = data.data.map((stop) => ({
         name: stop.attributes.name,
       }));
+
+      setStopList(stops);
+      setVehicleLocations([]);
+    } catch (error) {
+      console.error('Error fetching stop list:', error);
+      setFetchError(true);
+    }
+  };
+
+  const fetchStopListBus = async () => {
+    const url = `${SERVER_BASE_URL}/stops/bus?route=${selectedLineRef.current}&direction_id=${isInbound ? 1 : 0}`;
+
+    try {
+      const response = await fetch(url);
+      let stops = await response.json();
+
+      if (!isInbound) {
+        stops = stops.reverse();
+      }
 
       setStopList(stops);
       setVehicleLocations([]);
