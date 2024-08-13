@@ -12,6 +12,7 @@ import getColorsFromVehicleId from './constants/Colors';
 
 const App = () => {
   const SERVER_BASE_URL = 'http://localhost:3000';
+  // const SERVER_BASE_URL = 'http://172.20.0.25:3000';
 
   const [selectedLine, setSelectedLine] = useState('Green-E');
   const [selectedTrain, setSelectedTrain] = useState('Green-E');
@@ -58,7 +59,6 @@ const App = () => {
       fetchStopListBus();
     }
     fetchTrainLocations();
-    setCounter(0);
   }, [isInbound]);
 
   const fetchVehicleList = async () => {
