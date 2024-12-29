@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 const Header = () => {
   return <Text style={styles.headerText}>MBTA Train Tracker</Text>;

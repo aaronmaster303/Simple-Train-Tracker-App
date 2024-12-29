@@ -9,10 +9,12 @@ import StopList from './components/StopList';
 import Footer from './components/Footer';
 import DirectionPicker from './components/DirectionPicker';
 import getColorsFromVehicleId from './constants/Colors';
+import HorizontalLine from './components/HorizontalLine';
 
 const App = () => {
-  const SERVER_BASE_URL = 'http://localhost:3000';
+  // const SERVER_BASE_URL = 'http://localhost:3000';
   // const SERVER_BASE_URL = 'http://172.20.0.25:3000';
+  const SERVER_BASE_URL = 'https://simple-train-tracker-app-server-production.up.railway.app';
 
   const [selectedLine, setSelectedLine] = useState('Green-E');
   const [selectedTrain, setSelectedTrain] = useState('Green-E');
@@ -100,10 +102,6 @@ const App = () => {
       const response = await fetch(url);
       let stops = await response.json();
 
-      if (!isInbound) {
-        stops = stops.reverse();
-      }
-
       setStopList(stops);
       setVehicleLocations([]);
     } catch (error) {
@@ -138,7 +136,7 @@ const App = () => {
             const stopId = vehicle.relationships.stop.data.id;
             const name = await fetchStopNameFromId(stopId);
             const status = vehicle.attributes.current_status;
-            return { name, status };
+            return { stopId, name, status };
           }),
         );
         setVehicleLocations(vehicleLocations);
@@ -168,7 +166,9 @@ const App = () => {
             setIsInboundFunction={setIsInbound}
             lineColor={lineColor}
           />
+          <HorizontalLine />
           <StopList stopList={stopList} vehicleLocations={vehicleLocations} lineColor={lineColor} />
+          <HorizontalLine />
           <Footer isFailing={fetchError} />
         </View>
       </SafeAreaView>
