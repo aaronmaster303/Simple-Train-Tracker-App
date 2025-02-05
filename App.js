@@ -160,12 +160,16 @@ const App = () => {
             lineList={lines}
             lineSelectedFunction={setSelectedLine}
           />
-          <Toggle isTrain={isTrain} toggleSetFunction={setIsTrain} lineColor={lineColor} />
-          <DirectionPicker
-            isInbound={isInbound}
-            setIsInboundFunction={setIsInbound}
-            lineColor={lineColor}
-          />
+          <View style={styles.optionsContainer}>
+            <Toggle isTrain={isTrain} toggleSetFunction={setIsTrain} lineColor={lineColor} />
+            <DirectionPicker
+              isInbound={isInbound}
+              setIsInboundFunction={setIsInbound}
+              lineColor={lineColor}
+              firstStop={stopList[0] ? stopList[0].name : ''}
+              lastStop={stopList[0] ? stopList.at(-1).name : ''}
+            />
+          </View>
           <HorizontalLine />
           <StopList stopList={stopList} vehicleLocations={vehicleLocations} lineColor={lineColor} />
           <HorizontalLine />
@@ -193,6 +197,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 5,
+  },
+  optionsContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
+    marginVertical: 5,
   },
 });
 

@@ -15,7 +15,9 @@ const statusStrings = {
 const StopList = ({ stopList, vehicleLocations, lineColor }) => {
   const map = new Map();
 
-  stopList.forEach((item) => map.set(item.name, { name: item.name }));
+  if (stopList.length) {
+    stopList.forEach((item) => map.set(item.name, { name: item.name }));
+  }
 
   vehicleLocations?.forEach((item) => {
     if (map.has(item.name)) {
@@ -77,15 +79,17 @@ const styles = StyleSheet.create({
     borderRadius: 7,
   },
   stopText: {
-    fontSize: 18,
+    fontSize: 16,
     marginHorizontal: 6,
+    flexWrap: 'wrap',
+    maxWidth: 240,
   },
   stopTextActive: {
     fontWeight: 'bold',
     color: '#28a745',
   },
   stopStatus: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#28a745',
   },
 });
