@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
   switchLabel: {
     marginHorizontal: 10,
-    fontSize: 18,
+    fontSize: 16,
   },
 });
 

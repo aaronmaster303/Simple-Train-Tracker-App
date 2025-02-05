@@ -26,7 +26,6 @@ const App = () => {
   const [stopList, setStopList] = useState([]);
   const [lineColor, setLineColor] = useState(getColorsFromVehicleId('Green-E'));
   const [vehicleLocations, setVehicleLocations] = useState();
-  const [counter, setCounter] = useState(0);
 
   const selectedLineRef = useRef(selectedLine);
 
@@ -38,30 +37,27 @@ const App = () => {
   useEffect(() => {
     fetchVehicleList();
     selectedLineRef.current = isTrain ? selectedTrain : selectedBus;
-    setCounter(0);
   }, [isTrain]);
 
   useEffect(() => {
     isTrain ? fetchStopList() : fetchStopListBus();
-    fetchTrainLocations();
     setLineColor(getColorsFromVehicleId(selectedLineRef.current));
   }, [isTrain, selectedLine]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       fetchTrainLocations();
-      setCounter((prevCounter) => prevCounter + 1);
     }, 2500);
 
     return () => clearInterval(interval);
-  }, [counter]);
+  }, [isInbound, isTrain, selectedTrain, selectedBus]);
 
   useEffect(() => {
     if (!isTrain) {
       fetchStopListBus();
     }
     fetchTrainLocations();
-  }, [isInbound]);
+  }, [isInbound, isTrain, selectedTrain, selectedBus]);
 
   const fetchVehicleList = async () => {
     const url = `${SERVER_BASE_URL}/routes?filter[type]=${isTrain ? '0,1' : '3'}`;
@@ -123,7 +119,10 @@ const App = () => {
   };
 
   const fetchTrainLocations = async () => {
-    const url = `${SERVER_BASE_URL}/vehicles?filter[route]=${selectedLineRef.current}&filter[direction_id]=${isInbound ? 1 : 0}`;
+    const currentLine = isTrain ? selectedTrain : selectedBus;
+    const currentDirection = isInbound ? 1 : 0;
+
+    const url = `${SERVER_BASE_URL}/vehicles?filter[route]=${currentLine}&filter[direction_id]=${currentDirection}`;
 
     try {
       const response = await fetch(url);
@@ -145,8 +144,8 @@ const App = () => {
         setFetchError(true);
       }
     } catch (error) {
-      console.error('Error fetching train locations:', error);
       setFetchError(true);
+      console.error('Error fetching train locations:', error);
     }
   };
 
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
   optionsContainer: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     marginVertical: 5,
   },
 });

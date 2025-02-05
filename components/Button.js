@@ -19,10 +19,6 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    shadowColor: 'darkgray',
-    shadowRadius: 1,
-    shadowOffset: 1,
-    shadowOpacity: 1,
     borderRadius: 7,
     margin: 2,
     maxWidth: 180,

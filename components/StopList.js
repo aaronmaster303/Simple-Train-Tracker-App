@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     paddingVertical: 8,
-    marginVertical: 2,
+    marginVertical: 1,
     borderRadius: 7,
   },
   stopText: {
