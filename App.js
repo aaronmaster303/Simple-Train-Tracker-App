@@ -172,7 +172,7 @@ const App = () => {
           <HorizontalLine />
           <StopList stopList={stopList} vehicleLocations={vehicleLocations} lineColor={lineColor} />
           <HorizontalLine />
-          <Footer isFailing={fetchError} />
+          <Footer isFailing={fetchError} isTrain={isTrain} />
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
