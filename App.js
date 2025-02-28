@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
+import AlertButton from './components/AlertButton';
 import Header from './components/Header';
 import LinePicker from './components/LinePicker';
 import Toggle from './components/Toggle';
@@ -26,6 +27,7 @@ const App = () => {
   const [stopList, setStopList] = useState([]);
   const [lineColor, setLineColor] = useState(getColorsFromVehicleId('Green-E'));
   const [vehicleLocations, setVehicleLocations] = useState();
+  const [alerts, setAlerts] = useState(['hello']);
 
   const selectedLineRef = useRef(selectedLine);
 
@@ -153,7 +155,10 @@ const App = () => {
     <SafeAreaProvider>
       <SafeAreaView style={[styles.safeArea, { backgroundColor: lineColor.lighter }]}>
         <View style={styles.container}>
-          <Header />
+          <View style={styles.headerContainer}>
+            <Header />
+            {alerts.length > 0 && <AlertButton />}
+          </View>
           <LinePicker
             selectedLine={selectedLine}
             lineList={lines}
@@ -196,6 +201,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 5,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   optionsContainer: {
     flexDirection: 'row',
