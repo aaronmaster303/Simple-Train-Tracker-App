@@ -16,11 +16,13 @@ const AlertButton = ({ showAlerts, toggleAlertsButtonFunction }) => {
 const styles = StyleSheet.create({
   main: {
     position: 'absolute',
-    right: 20,
-    top: 8,
+    right: 14,
+    top: 6,
     zIndex: 2,
   },
-  buttonText: {},
+  buttonText: {
+    fontSize: 18,
+  },
 });
 
 export default AlertButton;
