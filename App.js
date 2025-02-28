@@ -155,7 +155,7 @@ const App = () => {
         <View style={styles.container}>
           <Header />
           <LinePicker
-            selectedLine={selectedLineRef.current}
+            selectedLine={selectedLine}
             lineList={lines}
             lineSelectedFunction={setSelectedLine}
           />
