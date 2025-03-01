@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { ScrollView, View, Text } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import Stop from './Stop';
 
 // const statusStrings = {
 //   STOPPED_AT: '⬣',
@@ -7,11 +8,6 @@ import { ScrollView, View, Text } from 'react-native';
 //   INCOMING_AT: '←',
 // };
 
-const statusStrings = {
-  STOPPED_AT: '(Stopped at)',
-  IN_TRANSIT_TO: '(In transit to)',
-  INCOMING_AT: '(Incoming at)',
-};
 const StopList = ({ stopList, vehicleLocations, lineColor }) => {
   const map = new Map();
 
@@ -32,26 +28,9 @@ const StopList = ({ stopList, vehicleLocations, lineColor }) => {
   return (
     <View style={styles.viewContainer}>
       <ScrollView style={styles.scrollViewContainer} horizontal={false}>
-        {finalStopList.map((stop, index) =>
-          stop.status ? (
-            <View
-              key={index}
-              style={[styles.stopContainer, { backgroundColor: lineColor.lighter }]}>
-              <Text style={[styles.stopText, styles.stopTextActive, { color: lineColor.primary }]}>
-                {stop.name}
-              </Text>
-              <Text
-                style={[
-                  styles.stopStatus,
-                  { color: lineColor.primary },
-                ]}>{` ${statusStrings[stop.status]} `}</Text>
-            </View>
-          ) : (
-            <View key={index} style={styles.stopContainer}>
-              <Text style={styles.stopText}>{stop.name}</Text>
-            </View>
-          ),
-        )}
+        {finalStopList.map((stop) => (
+          <Stop name={stop.name} status={stop.status} lineColor={lineColor} />
+        ))}
       </ScrollView>
     </View>
   );
@@ -68,29 +47,6 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     flex: 1,
-  },
-  stopContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    paddingVertical: 8,
-    marginVertical: 1,
-    borderRadius: 7,
-  },
-  stopText: {
-    fontSize: 16,
-    marginHorizontal: 6,
-    flexWrap: 'wrap',
-    maxWidth: 240,
-  },
-  stopTextActive: {
-    fontWeight: 'bold',
-    color: '#28a745',
-  },
-  stopStatus: {
-    fontSize: 16,
-    color: '#28a745',
   },
 });
 
