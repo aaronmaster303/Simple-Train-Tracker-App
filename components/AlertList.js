@@ -1,11 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { ScrollView, View, Text } from 'react-native';
-import HorizontalLine from '../components/HorizontalLine';
 
 const AlertList = ({ alertList, lineColor }) => {
   return (
     <View style={styles.viewContainer}>
-      <HorizontalLine />
       <ScrollView style={styles.scrollViewContainer} horizontal={false}>
         {alertList.map((alert, index) => (
           <View key={index} style={[styles.alertContainer, { backgroundColor: lineColor.lighter }]}>
@@ -21,7 +19,6 @@ const AlertList = ({ alertList, lineColor }) => {
           </View>
         ))}
       </ScrollView>
-      <HorizontalLine />
     </View>
   );
 };
@@ -31,9 +28,9 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: 'hidden',
     borderTopColor: 'black',
-    borderTopWidth: '1px',
+    borderTopWidth: 1,
     borderBottomColor: 'black',
-    borderBottomWidth: '1px',
+    borderBottomWidth: 1,
   },
   scrollViewContainer: {
     flex: 1,
