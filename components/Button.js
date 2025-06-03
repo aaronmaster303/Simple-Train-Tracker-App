@@ -1,3 +1,4 @@
+import { View } from 'react-native';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 const Button = ({ text1, text2, isActive, buttonPressedFunction, lineColor }) => {
@@ -10,7 +11,9 @@ const Button = ({ text1, text2, isActive, buttonPressedFunction, lineColor }) =>
       ]}
       onPress={() => buttonPressedFunction()}>
       <Text style={styles.buttonText}>{text1}</Text>
-      <Text style={styles.buttonText2}>{text2}</Text>
+      <View style={styles.stopNameContainer}>
+        <Text style={styles.buttonText2}>{text2}</Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -21,8 +24,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 7,
     margin: 2,
-    maxWidth: 180,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   buttonActive: {
     backgroundColor: '#28a745',
@@ -41,7 +44,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     flexWrap: 'wrap',
-    paddingEnd: 8,
+  },
+  stopNameContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
 });
 
