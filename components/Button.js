@@ -1,5 +1,4 @@
-import { View } from 'react-native';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 
 const Button = ({ text1, text2, isActive, buttonPressedFunction, lineColor }) => {
   return (
@@ -26,6 +25,7 @@ const styles = StyleSheet.create({
     margin: 2,
     flexDirection: 'row',
     alignItems: 'center',
+    minWidth: 150,
   },
   buttonActive: {
     backgroundColor: '#28a745',
@@ -46,9 +46,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   stopNameContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
   },
 });
 
