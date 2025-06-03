@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 const HorizontalLine = () => {
@@ -8,7 +7,6 @@ const HorizontalLine = () => {
 const styles = StyleSheet.create({
   line: {
     height: 1,
-    backgroundColor: '#ccc',
     marginVertical: 1,
   },
 });
