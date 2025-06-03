@@ -1,17 +1,12 @@
 import { StyleSheet } from 'react-native';
 import { ScrollView, View, Text } from 'react-native';
 
-// const statusStrings = {
-//   STOPPED_AT: '⬣',
-//   IN_TRANSIT_TO: '← (In transit to)',
-//   INCOMING_AT: '←',
-// };
-
 const statusStrings = {
   STOPPED_AT: '(Stopped at)',
   IN_TRANSIT_TO: '(In transit to)',
   INCOMING_AT: '(Incoming at)',
 };
+
 const StopList = ({ stopList, vehicleLocations, lineColor }) => {
   const map = new Map();
 
@@ -62,9 +57,9 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: 'hidden',
     borderTopColor: 'black',
-    borderTopWidth: '1px',
+    borderTopWidth: 1,
     borderBottomColor: 'black',
-    borderBottomWidth: '1px',
+    borderBottomWidth: 1,
   },
   scrollViewContainer: {
     flex: 1,
@@ -72,17 +67,18 @@ const styles = StyleSheet.create({
   stopContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    flexWrap: 'wrap',
     alignItems: 'center',
     paddingVertical: 8,
     marginVertical: 1,
     borderRadius: 7,
+    flexWrap: 'wrap',
   },
   stopText: {
     fontSize: 16,
     marginHorizontal: 6,
     flexWrap: 'wrap',
-    maxWidth: 240,
+    flexShrink: 1,
+    flexGrow: 1,
   },
   stopTextActive: {
     fontWeight: 'bold',
@@ -91,6 +87,7 @@ const styles = StyleSheet.create({
   stopStatus: {
     fontSize: 16,
     color: '#28a745',
+    marginHorizontal: 6,
   },
 });
 
