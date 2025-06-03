@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
   },
   stopTextActive: {
     fontWeight: 'bold',
-    color: '#28a745',
   },
   stopStatus: {
     fontSize: 16,

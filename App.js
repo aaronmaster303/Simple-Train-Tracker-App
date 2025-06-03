@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
+import AlertButton from './components/AlertButton';
+import AlertList from './components/AlertList';
 import Header from './components/Header';
 import LinePicker from './components/LinePicker';
 import Toggle from './components/Toggle';
@@ -26,6 +28,8 @@ const App = () => {
   const [stopList, setStopList] = useState([]);
   const [lineColor, setLineColor] = useState(getColorsFromVehicleId('Green-E'));
   const [vehicleLocations, setVehicleLocations] = useState();
+  const [alerts, setAlerts] = useState(['hello']);
+  const [showAlerts, setShowAlerts] = useState(false);
 
   const selectedLineRef = useRef(selectedLine);
 
@@ -42,6 +46,8 @@ const App = () => {
   useEffect(() => {
     isTrain ? fetchStopList() : fetchStopListBus();
     setLineColor(getColorsFromVehicleId(selectedLineRef.current));
+    fetchAlerts();
+    setShowAlerts(false);
   }, [isTrain, selectedLine]);
 
   useEffect(() => {
@@ -149,13 +155,31 @@ const App = () => {
     }
   };
 
+  const fetchAlerts = async () => {
+    const url = `${SERVER_BASE_URL}/alerts?route=${selectedLine}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setAlerts(data.data);
+      setFetchError(false);
+    } catch (error) {
+      setFetchError(true);
+    }
+  };
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={[styles.safeArea, { backgroundColor: lineColor.lighter }]}>
         <View style={styles.container}>
-          <Header />
+          <View style={styles.headerContainer}>
+            <Header />
+            {alerts.length > 0 && (
+              <AlertButton showAlerts={showAlerts} toggleAlertsButtonFunction={setShowAlerts} />
+            )}
+          </View>
           <LinePicker
-            selectedLine={selectedLine}
+            selectedLine={selectedLineRef.current}
             lineList={lines}
             lineSelectedFunction={setSelectedLine}
           />
@@ -170,7 +194,15 @@ const App = () => {
             />
           </View>
           <HorizontalLine />
-          <StopList stopList={stopList} vehicleLocations={vehicleLocations} lineColor={lineColor} />
+          {showAlerts ? (
+            <AlertList alertList={alerts} lineColor={lineColor} />
+          ) : (
+            <StopList
+              stopList={stopList}
+              vehicleLocations={vehicleLocations}
+              lineColor={lineColor}
+            />
+          )}
           <HorizontalLine />
           <Footer isFailing={fetchError} isTrain={isTrain} />
         </View>
@@ -196,6 +228,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 5,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   optionsContainer: {
     flexDirection: 'row',
