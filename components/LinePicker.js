@@ -19,9 +19,9 @@ const LinePicker = ({ selectedLine, lineList, lineSelectedFunction }) => {
 
 const styles = StyleSheet.create({
   pickerContainer: {
-    marginTop: -40,
+    marginTop: -58,
     marginBottom: -60,
-    overflow: 'hidden',
+    zIndex: 0,
   },
   pickerItem: {
     fontSize: 20,

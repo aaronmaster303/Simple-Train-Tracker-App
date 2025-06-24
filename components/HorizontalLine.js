@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
   line: {
     height: 1,
     marginVertical: 1,
+    backgroundColor: 'black',
   },
 });
 

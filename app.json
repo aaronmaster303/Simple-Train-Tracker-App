@@ -1,28 +1,16 @@
 {
   "expo": {
-    "name": "Simple Train Tracker",
-    "slug": "Simple Train Tracker",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+    "extra": {
+      "eas": {
+        "projectId": "b7215e0f-4433-4ce6-8cd9-03464ac5ca23"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "newArchEnabled": true
+    "owner": "aaronmaster303.dev",
+    "ios": {
+      "bundleIdentifier": "com.aaronmaster303.dev.simpletraintracker",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
   }
 }

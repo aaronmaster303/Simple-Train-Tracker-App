@@ -27,10 +27,6 @@ const styles = StyleSheet.create({
   viewContainer: {
     flex: 1,
     overflow: 'hidden',
-    borderTopColor: 'black',
-    borderTopWidth: 1,
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
   },
   scrollViewContainer: {
     flex: 1,

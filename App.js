@@ -233,6 +233,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1000,
+    paddingBottom: 18,
+    backgroundColor: 'white',
   },
   optionsContainer: {
     flexDirection: 'row',
