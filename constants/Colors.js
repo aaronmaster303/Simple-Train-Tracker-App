@@ -9,8 +9,14 @@ const lineColors = {
   Bus: { primary: 'purple', lighter: '#edd7fa' },
 };
 
+const alertBadgeColors = {
+  ONGOING: '#ffd700',
+  UPCOMING: '#CECECE',
+  NEW: '#DD93F1',
+};
+
 const getColorsFromVehicleId = (id) => {
   return lineColors[id] ? lineColors[id] : lineColors.Bus;
 };
 
-export default getColorsFromVehicleId;
+export { getColorsFromVehicleId, alertBadgeColors };

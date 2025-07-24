@@ -1,16 +1,25 @@
 {
   "expo": {
-    "extra": {
-      "eas": {
-        "projectId": "b7215e0f-4433-4ce6-8cd9-03464ac5ca23"
-      }
-    },
+    "name": "MBTA Train Tracker",
+    "slug": "mbta-train-tracker",
     "owner": "aaronmaster303.dev",
     "ios": {
       "bundleIdentifier": "com.aaronmaster303.dev.simpletraintracker",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c9e027ee-a2dd-4cd2-8a3b-22a196e0079e"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c9e027ee-a2dd-4cd2-8a3b-22a196e0079e"
+    },
+    "android": {}
   }
 }

@@ -10,7 +10,7 @@ import Toggle from './components/Toggle';
 import StopList from './components/StopList';
 import Footer from './components/Footer';
 import DirectionPicker from './components/DirectionPicker';
-import getColorsFromVehicleId from './constants/Colors';
+import { getColorsFromVehicleId } from './constants/Colors';
 import HorizontalLine from './components/HorizontalLine';
 
 const App = () => {
