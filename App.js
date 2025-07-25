@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AlertButton from './components/AlertButton';
 import AlertList from './components/AlertList';
@@ -28,19 +29,76 @@ const App = () => {
   const [stopList, setStopList] = useState([]);
   const [lineColor, setLineColor] = useState(getColorsFromVehicleId('Green-E'));
   const [vehicleLocations, setVehicleLocations] = useState();
-  const [alerts, setAlerts] = useState(['hello']);
+  const [alerts, setAlerts] = useState(['']);
   const [showAlerts, setShowAlerts] = useState(false);
 
   const selectedLineRef = useRef(selectedLine);
 
   useEffect(() => {
+    const loadSelectedLines = async () => {
+      try {
+        const isTrain = await AsyncStorage.getItem('saved-vehicle-type');
+        const train = await AsyncStorage.getItem('saved-train');
+        const bus = await AsyncStorage.getItem('saved-bus');
+        const isInbound = await AsyncStorage.getItem('saved-direction');
+
+        console.log('isTrain: ' + isTrain);
+        console.log('train: ' + train);
+        console.log('bus: ' + bus);
+        console.log('isInbound: ' + isInbound);
+
+        if (train !== null) {
+          setSelectedTrain(train);
+        }
+        if (bus !== null) {
+          setSelectedBus(bus);
+        }
+        if (isInbound !== null) {
+          setIsInbound(JSON.parse(isInbound));
+        }
+        if (isTrain !== null) {
+          setIsTrain(JSON.parse(isTrain));
+        }
+        if (train !== null && bus !== null && isTrain !== null) {
+          setSelectedLine(isTrain ? train : bus);
+          isTrain ? fetchStopList() : fetchStopListBus();
+        }
+      } catch (e) {
+        console.log('Error:' + e);
+      }
+    };
+
+    loadSelectedLines();
+  }, []);
+
+  useEffect(() => {
     selectedLineRef.current = selectedLine;
+
+    const saveSelectedLine = async () => {
+      try {
+        await AsyncStorage.setItem(isTrain ? 'saved-train' : 'saved-bus', selectedLine);
+        console.log('stored selected line: ' + selectedLine);
+      } catch (e) {
+        console.log('Error:' + e);
+      }
+    };
+
+    saveSelectedLine();
+
     isTrain ? setSelectedTrain(selectedLine) : setSelectedBus(selectedLine);
   }, [selectedLine]);
 
   useEffect(() => {
     fetchVehicleList();
     selectedLineRef.current = isTrain ? selectedTrain : selectedBus;
+
+    const saveIsTrain = async () => {
+      try {
+        await AsyncStorage.setItem('saved-vehicle-type', JSON.stringify(isTrain));
+      } catch (e) {}
+    };
+
+    saveIsTrain();
   }, [isTrain]);
 
   useEffect(() => {
@@ -64,6 +122,16 @@ const App = () => {
     }
     fetchTrainLocations();
   }, [isInbound, isTrain, selectedTrain, selectedBus]);
+
+  useEffect(() => {
+    const saveIsInbound = async () => {
+      try {
+        await AsyncStorage.setItem('saved-direction', JSON.stringify(isInbound));
+      } catch (e) {}
+    };
+
+    saveIsInbound();
+  }, [isInbound]);
 
   const fetchVehicleList = async () => {
     const url = `${SERVER_BASE_URL}/routes?filter[type]=${isTrain ? '0,1' : '3'}`;
