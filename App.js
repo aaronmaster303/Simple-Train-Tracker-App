@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,186 +15,105 @@ import { getColorsFromVehicleId } from './constants/Colors';
 import HorizontalLine from './components/HorizontalLine';
 
 const App = () => {
-  // const SERVER_BASE_URL = 'http://localhost:3000';
-  // const SERVER_BASE_URL = 'http://172.20.0.25:3000';
   const SERVER_BASE_URL = 'https://simple-train-tracker-app-server-production.up.railway.app';
 
-  const [selectedLine, setSelectedLine] = useState('Green-E');
+  const [selectedLine, setSelectedLine] = useState(null);
   const [selectedTrain, setSelectedTrain] = useState('Green-E');
   const [selectedBus, setSelectedBus] = useState('39');
   const [isTrain, setIsTrain] = useState(true);
   const [isInbound, setIsInbound] = useState(true);
+
   const [lines, setLines] = useState([]);
   const [fetchError, setFetchError] = useState(false);
   const [stopList, setStopList] = useState([]);
   const [lineColor, setLineColor] = useState(getColorsFromVehicleId('Green-E'));
-  const [vehicleLocations, setVehicleLocations] = useState();
-  const [alerts, setAlerts] = useState(['']);
+  const [vehicleLocations, setVehicleLocations] = useState([]);
+  const [alerts, setAlerts] = useState([]);
   const [showAlerts, setShowAlerts] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const selectedLineRef = useRef(selectedLine);
-
-  useEffect(() => {
-    const loadSelectedLines = async () => {
-      try {
-        const isTrain = await AsyncStorage.getItem('saved-vehicle-type');
-        const train = await AsyncStorage.getItem('saved-train');
-        const bus = await AsyncStorage.getItem('saved-bus');
-        const isInbound = await AsyncStorage.getItem('saved-direction');
-
-        console.log('isTrain: ' + isTrain);
-        console.log('train: ' + train);
-        console.log('bus: ' + bus);
-        console.log('isInbound: ' + isInbound);
-
-        if (train !== null) {
-          setSelectedTrain(train);
-        }
-        if (bus !== null) {
-          setSelectedBus(bus);
-        }
-        if (isInbound !== null) {
-          setIsInbound(JSON.parse(isInbound));
-        }
-        if (isTrain !== null) {
-          setIsTrain(JSON.parse(isTrain));
-        }
-        if (train !== null && bus !== null && isTrain !== null) {
-          setSelectedLine(isTrain ? train : bus);
-          isTrain ? fetchStopList() : fetchStopListBus();
-        }
-      } catch (e) {
-        console.log('Error:' + e);
-      }
-    };
-
-    loadSelectedLines();
-  }, []);
-
   useEffect(() => {
     selectedLineRef.current = selectedLine;
-
-    const saveSelectedLine = async () => {
-      try {
-        await AsyncStorage.setItem(isTrain ? 'saved-train' : 'saved-bus', selectedLine);
-        console.log('stored selected line: ' + selectedLine);
-      } catch (e) {
-        console.log('Error:' + e);
-      }
-    };
-
-    saveSelectedLine();
-
-    isTrain ? setSelectedTrain(selectedLine) : setSelectedBus(selectedLine);
   }, [selectedLine]);
 
-  useEffect(() => {
-    fetchVehicleList();
-    selectedLineRef.current = isTrain ? selectedTrain : selectedBus;
-
-    const saveIsTrain = async () => {
-      try {
-        await AsyncStorage.setItem('saved-vehicle-type', JSON.stringify(isTrain));
-      } catch (e) {}
-    };
-
-    saveIsTrain();
-  }, [isTrain]);
-
-  useEffect(() => {
-    isTrain ? fetchStopList() : fetchStopListBus();
-    setLineColor(getColorsFromVehicleId(selectedLineRef.current));
-    fetchAlerts();
-    setShowAlerts(false);
-  }, [isTrain, selectedLine]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchTrainLocations();
-    }, 2500);
-
-    return () => clearInterval(interval);
-  }, [isInbound, isTrain, selectedTrain, selectedBus]);
-
-  useEffect(() => {
-    if (!isTrain) {
-      fetchStopListBus();
-    }
-    fetchTrainLocations();
-  }, [isInbound, isTrain, selectedTrain, selectedBus]);
-
-  useEffect(() => {
-    const saveIsInbound = async () => {
-      try {
-        await AsyncStorage.setItem('saved-direction', JSON.stringify(isInbound));
-      } catch (e) {}
-    };
-
-    saveIsInbound();
-  }, [isInbound]);
-
-  const fetchVehicleList = async () => {
-    const url = `${SERVER_BASE_URL}/routes?filter[type]=${isTrain ? '0,1' : '3'}`;
+  const fetchVehicleList = useCallback(async () => {
+    const type = isTrain ? '0,1' : '3';
+    const url = `${SERVER_BASE_URL}/routes?filter[type]=${type}`;
     try {
       const response = await fetch(url);
       const data = await response.json();
       const allLines = data.data;
-      const lines = allLines.filter((line) => line.id !== 'Mattapan');
-      setLines(lines.sort((a, b) => a.id - b.id));
+      const filteredLines = allLines.filter((line) => line.id !== 'Mattapan');
+      setLines(filteredLines.sort((a, b) => a.id - b.id));
+      setFetchError(false);
     } catch (error) {
-      console.error('Error fetching lines:', error);
-    }
-  };
-
-  const fetchStopList = async () => {
-    const url = `${SERVER_BASE_URL}/stops?filter[route]=${selectedLineRef.current}&filter[direction_id]=1`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      const stops = data.data.map((stop) => ({
-        name: stop.attributes.name,
-      }));
-
-      setStopList(stops);
-      setVehicleLocations([]);
-    } catch (error) {
-      console.error('Error fetching stop list:', error);
       setFetchError(true);
+      setLines([]);
     }
-  };
+  }, [isTrain, SERVER_BASE_URL]);
 
-  const fetchStopListBus = async () => {
-    const url = `${SERVER_BASE_URL}/stops/bus?route=${selectedLineRef.current}&direction_id=${isInbound ? 1 : 0}`;
+  const fetchStopListTrain = useCallback(
+    async (lineId, directionId) => {
+      if (!lineId) return;
+      const url = `${SERVER_BASE_URL}/stops?filter[route]=${lineId}&filter[direction_id]=1`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const stops = data.data.map((stop) => ({
+          name: stop.attributes.name,
+          id: stop.id,
+        }));
+        setStopList(stops);
+        setFetchError(false);
+        setVehicleLocations([]);
+      } catch (error) {
+        setFetchError(true);
+        setStopList([]);
+      }
+    },
+    [SERVER_BASE_URL],
+  );
 
-    try {
-      const response = await fetch(url);
-      let stops = await response.json();
+  const fetchStopListBus = useCallback(
+    async (lineId, directionId) => {
+      if (!lineId) return;
+      const url = `${SERVER_BASE_URL}/stops/bus?route=${lineId}&direction_id=${directionId}`;
+      try {
+        const response = await fetch(url);
+        const stops = await response.json();
+        setStopList(stops);
+        setFetchError(false);
+        setVehicleLocations([]);
+      } catch (error) {
+        setFetchError(true);
+        setStopList([]);
+      }
+    },
+    [SERVER_BASE_URL],
+  );
 
-      setStopList(stops);
-      setVehicleLocations([]);
-    } catch (error) {
-      console.error('Error fetching stop list:', error);
-      setFetchError(true);
-    }
-  };
+  const fetchStopNameFromId = useCallback(
+    async (stopId) => {
+      if (!stopId) return null;
+      const url = `${SERVER_BASE_URL}/stops/${stopId}`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.data.attributes.name;
+      } catch (error) {
+        setFetchError(true);
+        return null;
+      }
+    },
+    [SERVER_BASE_URL],
+  );
 
-  const fetchStopNameFromId = async (stopId) => {
-    const url = `${SERVER_BASE_URL}/stops/${stopId}`;
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      return data.data.attributes.name;
-    } catch (error) {
-      console.error('Error fetching stop name:', error);
-      setFetchError(true);
-    }
-  };
-
-  const fetchTrainLocations = async () => {
+  const fetchTrainLocations = useCallback(async () => {
     const currentLine = isTrain ? selectedTrain : selectedBus;
     const currentDirection = isInbound ? 1 : 0;
+    if (!currentLine) return;
 
     const url = `${SERVER_BASE_URL}/vehicles?filter[route]=${currentLine}&filter[direction_id]=${currentDirection}`;
 
@@ -204,28 +123,27 @@ const App = () => {
       const vehicles = data.data;
 
       if (vehicles.length > 0) {
-        const vehicleLocations = await Promise.all(
-          vehicles.map(async (vehicle) => {
-            const stopId = vehicle.relationships.stop.data.id;
-            const name = await fetchStopNameFromId(stopId);
-            const status = vehicle.attributes.current_status;
-            return { stopId, name, status };
-          }),
-        );
-        setVehicleLocations(vehicleLocations);
+        const vehicleLocationsPromises = vehicles.map(async (vehicle) => {
+          const stopId = vehicle.relationships.stop.data.id;
+          const name = await fetchStopNameFromId(stopId);
+          const status = vehicle.attributes.current_status;
+          return { stopId, name, status };
+        });
+        const resolvedLocations = await Promise.all(vehicleLocationsPromises);
+        setVehicleLocations(resolvedLocations);
         setFetchError(false);
       } else {
-        setFetchError(true);
+        setVehicleLocations([]);
+        setFetchError(false);
       }
     } catch (error) {
       setFetchError(true);
-      console.error('Error fetching train locations:', error);
     }
-  };
+  }, [isTrain, selectedTrain, selectedBus, isInbound, fetchStopNameFromId, SERVER_BASE_URL]);
 
-  const fetchAlerts = async () => {
+  const fetchAlerts = useCallback(async () => {
+    if (!selectedLine) return;
     const url = `${SERVER_BASE_URL}/alerts?route=${selectedLine}`;
-
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -233,8 +151,134 @@ const App = () => {
       setFetchError(false);
     } catch (error) {
       setFetchError(true);
+      setAlerts([]);
     }
-  };
+  }, [selectedLine, SERVER_BASE_URL]);
+
+  useEffect(() => {
+    const loadSavedData = async () => {
+      setIsLoading(true);
+      try {
+        const savedIsTrain = await AsyncStorage.getItem('saved-vehicle-type');
+        const savedTrain = await AsyncStorage.getItem('saved-train');
+        const savedBus = await AsyncStorage.getItem('saved-bus');
+        const savedIsInbound = await AsyncStorage.getItem('saved-direction');
+
+        const initialIsTrain = savedIsTrain !== null ? JSON.parse(savedIsTrain) : true;
+        const initialTrain = savedTrain !== null ? savedTrain : 'Green-E';
+        const initialBus = savedBus !== null ? savedBus : '39';
+        const initialIsInbound = savedIsInbound !== null ? JSON.parse(savedIsInbound) : true;
+
+        setIsTrain(initialIsTrain);
+        setSelectedTrain(initialTrain);
+        setSelectedBus(initialBus);
+        setIsInbound(initialIsInbound);
+
+        const calculatedSelectedLine = initialIsTrain ? initialTrain : initialBus;
+        setSelectedLine(calculatedSelectedLine);
+      } catch (e) {
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSavedData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedLine !== null && !isLoading) {
+      const saveSelectedLineToStorage = async () => {
+        try {
+          await AsyncStorage.setItem(isTrain ? 'saved-train' : 'saved-bus', selectedLine);
+        } catch (e) {}
+      };
+      saveSelectedLineToStorage();
+
+      if (isTrain) {
+        setSelectedTrain(selectedLine);
+      } else {
+        setSelectedBus(selectedLine);
+      }
+    }
+  }, [selectedLine, isTrain, isLoading]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      const saveIsTrainToStorage = async () => {
+        try {
+          await AsyncStorage.setItem('saved-vehicle-type', JSON.stringify(isTrain));
+        } catch (e) {}
+      };
+      saveIsTrainToStorage();
+      fetchVehicleList();
+    }
+  }, [isTrain, isLoading, fetchVehicleList]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      const saveIsInboundToStorage = async () => {
+        try {
+          await AsyncStorage.setItem('saved-direction', JSON.stringify(isInbound));
+        } catch (e) {}
+      };
+      saveIsInboundToStorage();
+    }
+  }, [isInbound, isLoading]);
+
+  useEffect(() => {
+    if (!isLoading && selectedLine !== null) {
+      if (isTrain) {
+        fetchStopListTrain(selectedLine, 1);
+      } else {
+        fetchStopListBus(selectedLine, isInbound ? 1 : 0);
+      }
+
+      setLineColor(getColorsFromVehicleId(selectedLine));
+
+      fetchAlerts();
+      setShowAlerts(false);
+    }
+  }, [
+    selectedLine,
+    isTrain,
+    isInbound,
+    isLoading,
+    fetchStopListTrain,
+    fetchStopListBus,
+    fetchAlerts,
+  ]);
+
+  useEffect(() => {
+    if (!isLoading && selectedLine !== null) {
+      fetchTrainLocations();
+      const interval = setInterval(() => {
+        fetchTrainLocations();
+      }, 2500);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [
+    isLoading,
+    selectedLine,
+    isTrain,
+    selectedTrain,
+    selectedBus,
+    isInbound,
+    fetchTrainLocations,
+  ]);
+
+  if (isLoading) {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text>Loading preferences...</Text>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
 
   return (
     <SafeAreaProvider>
@@ -247,18 +291,25 @@ const App = () => {
             )}
           </View>
           <LinePicker
-            selectedLine={selectedLineRef.current}
+            selectedLine={selectedLine}
             lineList={lines}
             lineSelectedFunction={setSelectedLine}
           />
           <View style={styles.optionsContainer}>
-            <Toggle isTrain={isTrain} toggleSetFunction={setIsTrain} lineColor={lineColor} />
+            <Toggle
+              isTrain={isTrain}
+              toggleSetFunction={(val) => {
+                setIsTrain(val);
+                setSelectedLine(val ? selectedTrain : selectedBus);
+              }}
+              lineColor={lineColor}
+            />
             <DirectionPicker
               isInbound={isInbound}
               setIsInboundFunction={setIsInbound}
               lineColor={lineColor}
               firstStop={stopList[0] ? stopList[0].name : ''}
-              lastStop={stopList[0] ? stopList.at(-1).name : ''}
+              lastStop={stopList[stopList.length - 1] ? stopList[stopList.length - 1].name : ''}
             />
           </View>
           <HorizontalLine />
@@ -296,6 +347,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 5,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerContainer: {
     flexDirection: 'row',
