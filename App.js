@@ -259,15 +259,7 @@ const App = () => {
         clearInterval(interval);
       };
     }
-  }, [
-    isLoading,
-    selectedLine,
-    isTrain,
-    selectedTrain,
-    selectedBus,
-    isInbound,
-    fetchTrainLocations,
-  ]);
+  }, [isLoading, selectedLine, isTrain, isInbound, fetchTrainLocations]);
 
   if (isLoading) {
     return (
