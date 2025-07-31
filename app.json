@@ -1,23 +1,28 @@
 {
-  "expo": {
-    "name": "MBTA Train Tracker",
-    "slug": "mbta-train-tracker",
-    "owner": "aaronmaster303.dev",
-    "ios": {
-      "bundleIdentifier": "com.aaronmaster303.dev.simpletraintracker",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
-    },
-    "extra": {
-      "eas": {
-        "projectId": "c9e027ee-a2dd-4cd2-8a3b-22a196e0079e"
-      }
-    },
-    "runtimeVersion": "1.0.1",
-    "updates": {
-      "url": "https://u.expo.dev/c9e027ee-a2dd-4cd2-8a3b-22a196e0079e"
-    },
-    "android": {}
-  }
+	"expo": {
+		"name": "MBTA Train Tracker",
+		"slug": "mbta-train-tracker",
+		"owner": "aaronmaster303.dev",
+		"ios": {
+			"bundleIdentifier": "com.aaronmaster303.dev.simpletraintracker",
+			"infoPlist": {
+				"ITSAppUsesNonExemptEncryption": false
+			},
+			"icon": {
+				"dark": "./assets/images/icon.png",
+				"light": "./assets/images/icon.png",
+				"tinted": "./assets/images/icon.png"
+			}
+		},
+		"extra": {
+			"eas": {
+				"projectId": "c9e027ee-a2dd-4cd2-8a3b-22a196e0079e"
+			}
+		},
+		"runtimeVersion": "1.0.1",
+		"updates": {
+			"url": "https://u.expo.dev/c9e027ee-a2dd-4cd2-8a3b-22a196e0079e"
+		},
+		"android": {}
+	}
 }
