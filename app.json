@@ -1,6 +1,6 @@
 {
 	"expo": {
-		"name": "MBTA Train Tracker",
+		"name": "MBTA Tracker",
 		"slug": "mbta-train-tracker",
 		"owner": "aaronmaster303.dev",
 		"ios": {
@@ -23,6 +23,8 @@
 		"updates": {
 			"url": "https://u.expo.dev/c9e027ee-a2dd-4cd2-8a3b-22a196e0079e"
 		},
-		"android": {}
+		"android": {
+			"package": "com.aaronmaster303.dev.simpletraintracker"
+		}
 	}
 }

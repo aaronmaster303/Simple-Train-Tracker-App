@@ -13,6 +13,9 @@ if this does not work:
 eas build --platform ios --profile production --local
 eas submit
 
+if changes do not appear:
+npx expo prebuild --clean
+
 ## Local Build
 
 eas build --profile development --platform ios --local
