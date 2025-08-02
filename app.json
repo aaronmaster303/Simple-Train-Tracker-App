@@ -9,9 +9,9 @@
 				"ITSAppUsesNonExemptEncryption": false
 			},
 			"icon": {
-				"dark": "./assets/images/icon.png",
-				"light": "./assets/images/icon.png",
-				"tinted": "./assets/images/icon.png"
+				"dark": "./assets/images/ios-dark.png",
+				"light": "./assets/images/ios-light.png",
+				"tinted": "./assets/images/ios-tinted.png"
 			}
 		},
 		"extra": {
