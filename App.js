@@ -15,13 +15,16 @@ import { getColorsFromVehicleId } from './constants/Colors';
 import HorizontalLine from './components/HorizontalLine';
 
 const App = () => {
-	const SERVER_BASE_URL = 'https://simple-train-tracker-app-server-production.up.railway.app';
+	// const SERVER_BASE_URL = 'https://simple-train-tracker-app-server-production.up.railway.app';
+	const SERVER_BASE_URL = 'http://localhost:3000';
 
 	const [selectedLine, setSelectedLine] = useState(null);
 	const [selectedTrain, setSelectedTrain] = useState('Green-E');
 	const [selectedBus, setSelectedBus] = useState('39');
 	const [isTrain, setIsTrain] = useState(true);
 	const [isInbound, setIsInbound] = useState(true);
+
+	const [selectedStop, setSelectedStop] = useState('Brigham Circle');
 
 	const [lines, setLines] = useState([]);
 	const [fetchError, setFetchError] = useState(false);
@@ -63,7 +66,7 @@ const App = () => {
 				const data = await response.json();
 				const stops = data.data.map((stop) => ({
 					name: stop.attributes.name,
-					id: stop.id
+					id: stop.id,
 				}));
 				setStopList(stops);
 				setFetchError(false);
@@ -73,7 +76,7 @@ const App = () => {
 				setStopList([]);
 			}
 		},
-		[SERVER_BASE_URL]
+		[SERVER_BASE_URL],
 	);
 
 	const fetchStopListBus = useCallback(
@@ -91,7 +94,7 @@ const App = () => {
 				setStopList([]);
 			}
 		},
-		[SERVER_BASE_URL]
+		[SERVER_BASE_URL],
 	);
 
 	const fetchStopNameFromId = useCallback(
@@ -107,7 +110,7 @@ const App = () => {
 				return null;
 			}
 		},
-		[SERVER_BASE_URL]
+		[SERVER_BASE_URL],
 	);
 
 	const fetchTrainLocations = useCallback(async () => {
@@ -246,7 +249,7 @@ const App = () => {
 		isLoading,
 		fetchStopListTrain,
 		fetchStopListBus,
-		fetchAlerts
+		fetchAlerts,
 	]);
 
 	useEffect(() => {
@@ -333,7 +336,7 @@ const App = () => {
 const styles = StyleSheet.create({
 	safeArea: {
 		flex: 1,
-		backgroundColor: '#ffd8a6'
+		backgroundColor: '#ffd8a6',
 	},
 	container: {
 		flex: 1,
@@ -346,12 +349,12 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.2,
 		shadowRadius: 2,
-		elevation: 5
+		elevation: 5,
 	},
 	loadingContainer: {
 		flex: 1,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	headerContainer: {
 		flexDirection: 'row',
@@ -359,14 +362,14 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		zIndex: 1000,
 		paddingBottom: 18,
-		backgroundColor: 'white'
+		backgroundColor: 'white',
 	},
 	optionsContainer: {
 		flexDirection: 'row',
 		backgroundColor: 'white',
 		justifyContent: 'space-evenly',
-		marginVertical: 5
-	}
+		marginVertical: 5,
+	},
 });
 
 export default App;
