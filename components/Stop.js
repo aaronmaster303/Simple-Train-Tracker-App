@@ -7,7 +7,7 @@ const statusStrings = {
 	INCOMING_AT: '(Incoming at)',
 };
 
-const Stop = ({ name, lineColor, status, prediction }) => {
+const Stop = ({ name, lineColor, status, stopTime }) => {
 	return (
 		<View>
 			{status ? (
@@ -23,9 +23,9 @@ const Stop = ({ name, lineColor, status, prediction }) => {
 					<Text style={[styles.stopStatus, { color: lineColor.primary }]}>
 						{` ${statusStrings[status]} `}
 					</Text>
-					{prediction ? (
+					{stopTime && Object.keys(stopTime).length > 0 ? (
 						<Text style={[styles.stopStatus, { color: lineColor.primary }]}>
-							{` ${prediction.minutes}:${prediction.seconds} `}
+							{` ${stopTime.minutes}:${stopTime.seconds} `}
 						</Text>
 					) : (
 						<></>
@@ -34,9 +34,9 @@ const Stop = ({ name, lineColor, status, prediction }) => {
 			) : (
 				<View style={styles.stopContainer}>
 					<Text style={styles.stopText}>{name}</Text>
-					{prediction ? (
+					{stopTime && Object.keys(stopTime).length > 0 ? (
 						<Text style={[styles.stopStatus, { color: lineColor.primary }]}>
-							{` ${prediction.minutes}:${prediction.seconds} `}
+							{formatTime(stopTime.minutes, stopTime.seconds)}
 						</Text>
 					) : (
 						<></>
@@ -45,6 +45,10 @@ const Stop = ({ name, lineColor, status, prediction }) => {
 			)}
 		</View>
 	);
+};
+
+const formatTime = (minutes, seconds) => {
+	return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 };
 
 const styles = StyleSheet.create({

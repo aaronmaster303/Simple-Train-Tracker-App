@@ -18,13 +18,15 @@ const App = () => {
 	// const SERVER_BASE_URL = 'https://simple-train-tracker-app-server-production.up.railway.app';
 	const SERVER_BASE_URL = 'http://localhost:3000';
 
-	const [selectedLine, setSelectedLine] = useState(null);
+	const [selectedLine, setSelectedLine] = useState('Green-E');
 	const [selectedTrain, setSelectedTrain] = useState('Green-E');
 	const [selectedBus, setSelectedBus] = useState('39');
 	const [isTrain, setIsTrain] = useState(true);
 	const [isInbound, setIsInbound] = useState(true);
 
-	const [selectedStop, setSelectedStop] = useState('Brigham Circle');
+	// ID: 70250, Name: Brigham Circle, text_id: place-brmnl
+	const [selectedStop, setSelectedStop] = useState({ name: 'Brigham Circle', id: 'place-brmnl' }); //Brigham Circle
+	const [selectedStopTime, setSelectedStopTime] = useState({ minutes: 0, seconds: 0 }); //Brigham Circle
 
 	const [lines, setLines] = useState([]);
 	const [fetchError, setFetchError] = useState(false);
@@ -51,7 +53,7 @@ const App = () => {
 			const filteredLines = allLines.filter((line) => line.id !== 'Mattapan');
 			setLines(filteredLines.sort((a, b) => a.id - b.id));
 			setFetchError(false);
-		} catch (e) {
+		} catch {
 			setFetchError(true);
 			setLines([]);
 		}
@@ -60,18 +62,18 @@ const App = () => {
 	const fetchStopListTrain = useCallback(
 		async (lineId, directionId) => {
 			if (!lineId) return;
-			const url = `${SERVER_BASE_URL}/stops?filter[route]=${lineId}&filter[direction_id]=1`;
+			const url = `${SERVER_BASE_URL}/stops?include=child_stops&filter[route]=${lineId}&filter[direction_id]=1`;
 			try {
 				const response = await fetch(url);
 				const data = await response.json();
 				const stops = data.data.map((stop) => ({
-					name: stop.attributes.name,
 					id: stop.id,
+					name: stop.attributes.name,
 				}));
 				setStopList(stops);
 				setFetchError(false);
 				setVehicleLocations([]);
-			} catch (error) {
+			} catch {
 				setFetchError(true);
 				setStopList([]);
 			}
@@ -89,7 +91,7 @@ const App = () => {
 				setStopList(stops);
 				setFetchError(false);
 				setVehicleLocations([]);
-			} catch (error) {
+			} catch {
 				setFetchError(true);
 				setStopList([]);
 			}
@@ -105,7 +107,7 @@ const App = () => {
 				const response = await fetch(url);
 				const data = await response.json();
 				return data.data.attributes.name;
-			} catch (error) {
+			} catch {
 				setFetchError(true);
 				return null;
 			}
@@ -139,7 +141,7 @@ const App = () => {
 				setVehicleLocations([]);
 				setFetchError(false);
 			}
-		} catch (error) {
+		} catch {
 			setFetchError(true);
 		}
 	}, [isTrain, selectedTrain, selectedBus, isInbound, fetchStopNameFromId, SERVER_BASE_URL]);
@@ -152,11 +154,30 @@ const App = () => {
 			const data = await response.json();
 			setAlerts(data.data);
 			setFetchError(false);
-		} catch (error) {
+		} catch {
 			setFetchError(true);
 			setAlerts([]);
 		}
 	}, [selectedLine, SERVER_BASE_URL]);
+
+	const fetchStopTime = useCallback(async () => {
+		const url = `${SERVER_BASE_URL}/predictions?route=${selectedLine}&direction_id=${isInbound ? 1 : 0}&stop=${selectedStop.id}`;
+		console.log(url);
+		try {
+			const response = await fetch(url);
+			const data = await response.json();
+			setSelectedStopTime(data);
+		} catch {}
+	}, [
+		isTrain,
+		selectedLine,
+		selectedStop,
+		selectedTrain,
+		selectedBus,
+		isInbound,
+		fetchStopNameFromId,
+		SERVER_BASE_URL,
+	]);
 
 	useEffect(() => {
 		const loadSavedData = async () => {
@@ -180,7 +201,7 @@ const App = () => {
 
 				const calculatedSelectedLine = initialIsTrain ? initialTrain : initialBus;
 				setSelectedLine(calculatedSelectedLine);
-			} catch (e) {
+			} catch {
 			} finally {
 				setIsLoading(false);
 			}
@@ -194,7 +215,7 @@ const App = () => {
 			const saveSelectedLineToStorage = async () => {
 				try {
 					await AsyncStorage.setItem(isTrain ? 'saved-train' : 'saved-bus', selectedLine);
-				} catch (e) {}
+				} catch {}
 			};
 			saveSelectedLineToStorage();
 
@@ -211,7 +232,7 @@ const App = () => {
 			const saveIsTrainToStorage = async () => {
 				try {
 					await AsyncStorage.setItem('saved-vehicle-type', JSON.stringify(isTrain));
-				} catch (e) {}
+				} catch {}
 			};
 			saveIsTrainToStorage();
 			fetchVehicleList();
@@ -223,7 +244,7 @@ const App = () => {
 			const saveIsInboundToStorage = async () => {
 				try {
 					await AsyncStorage.setItem('saved-direction', JSON.stringify(isInbound));
-				} catch (e) {}
+				} catch {}
 			};
 			saveIsInboundToStorage();
 		}
@@ -255,9 +276,11 @@ const App = () => {
 	useEffect(() => {
 		if (!isLoading && selectedLine !== null) {
 			fetchTrainLocations();
+			fetchStopTime();
 			const interval = setInterval(() => {
 				fetchTrainLocations();
-			}, 2500);
+				fetchStopTime();
+			}, 500); // 2500 original
 
 			return () => {
 				clearInterval(interval);
@@ -323,6 +346,8 @@ const App = () => {
 							stopList={stopList}
 							vehicleLocations={vehicleLocations}
 							lineColor={lineColor}
+							selectedStop={selectedStop}
+							selectedStopTime={selectedStopTime}
 						/>
 					)}
 					<HorizontalLine />

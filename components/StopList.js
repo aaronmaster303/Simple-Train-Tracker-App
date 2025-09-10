@@ -1,14 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { ScrollView, View, Text } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import Stop from './Stop';
 
-const statusStrings = {
-	STOPPED_AT: '(Stopped at)',
-	IN_TRANSIT_TO: '(In transit to)',
-	INCOMING_AT: '(Incoming at)',
-};
-
-const StopList = ({ stopList, vehicleLocations, lineColor, prediction }) => {
+const StopList = ({ stopList, vehicleLocations, lineColor, selectedStop, selectedStopTime }) => {
 	const map = new Map();
 
 	if (stopList.length) {
@@ -34,7 +28,7 @@ const StopList = ({ stopList, vehicleLocations, lineColor, prediction }) => {
 						name={stop.name}
 						lineColor={lineColor}
 						status={stop.status}
-						prediction={prediction}
+						stopTime={stop.name === selectedStop.name ? selectedStopTime : {}}
 					/>
 				))}
 			</ScrollView>
