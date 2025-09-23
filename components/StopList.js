@@ -2,11 +2,18 @@ import { StyleSheet } from 'react-native';
 import { ScrollView, View } from 'react-native';
 import Stop from './Stop';
 
-const StopList = ({ stopList, vehicleLocations, lineColor, selectedStop, selectedStopTime }) => {
+const StopList = ({
+	stopList,
+	vehicleLocations,
+	lineColor,
+	selectedStop,
+	selectedStopTime,
+	setSelectedStopFunction,
+}) => {
 	const map = new Map();
 
 	if (stopList.length) {
-		stopList.forEach((item) => map.set(item.name, { name: item.name }));
+		stopList.forEach((item) => map.set(item.name, { name: item.name, id: item.id }));
 	}
 
 	vehicleLocations?.forEach((item) => {
@@ -25,10 +32,12 @@ const StopList = ({ stopList, vehicleLocations, lineColor, selectedStop, selecte
 				{finalStopList.map((stop, index) => (
 					<Stop
 						key={index}
+						id={stop.id}
 						name={stop.name}
 						lineColor={lineColor}
 						status={stop.status}
 						stopTime={stop.name === selectedStop.name ? selectedStopTime : {}}
+						setSelectedStopFunction={setSelectedStopFunction}
 					/>
 				))}
 			</ScrollView>

@@ -22,7 +22,7 @@ const App = () => {
 	const [selectedTrain, setSelectedTrain] = useState('Green-E');
 	const [selectedBus, setSelectedBus] = useState('39');
 	const [isTrain, setIsTrain] = useState(true);
-	const [isInbound, setIsInbound] = useState(true);
+	const [isInbound, setIsInbound] = useState(false);
 
 	// ID: 70250, Name: Brigham Circle, text_id: place-brmnl
 	const [selectedStop, setSelectedStop] = useState({ name: 'Brigham Circle', id: 'place-brmnl' }); //Brigham Circle
@@ -168,16 +168,7 @@ const App = () => {
 			const data = await response.json();
 			setSelectedStopTime(data);
 		} catch {}
-	}, [
-		isTrain,
-		selectedLine,
-		selectedStop,
-		selectedTrain,
-		selectedBus,
-		isInbound,
-		fetchStopNameFromId,
-		SERVER_BASE_URL,
-	]);
+	}, [selectedLine, selectedStop, isInbound, SERVER_BASE_URL]);
 
 	useEffect(() => {
 		const loadSavedData = async () => {
@@ -286,7 +277,7 @@ const App = () => {
 				clearInterval(interval);
 			};
 		}
-	}, [isLoading, selectedLine, isTrain, isInbound, fetchTrainLocations]);
+	}, [isLoading, selectedLine, isTrain, isInbound, fetchTrainLocations, fetchStopTime]);
 
 	if (isLoading) {
 		return (
@@ -348,6 +339,7 @@ const App = () => {
 							lineColor={lineColor}
 							selectedStop={selectedStop}
 							selectedStopTime={selectedStopTime}
+							setSelectedStopFunction={setSelectedStop}
 						/>
 					)}
 					<HorizontalLine />

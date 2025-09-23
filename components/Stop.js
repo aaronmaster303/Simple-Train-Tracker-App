@@ -1,5 +1,6 @@
+import { useRef } from 'react';
 import { StyleSheet } from 'react-native';
-import { View, Text } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 
 const statusStrings = {
 	STOPPED_AT: '(Stopped at)',
@@ -11,7 +12,7 @@ const stopTimeElement = (name, stopTime, lineColor) => {
 	return (
 		<View style={[styles.selectedStopContainer, { backgroundColor: lineColor.primary }]}>
 			<Text style={[styles.stopText, styles.stopTextActive, styles.stopTimeColor]}>
-				{name}
+				{'★ ' + name}
 			</Text>
 			<Text
 				style={[
@@ -51,15 +52,20 @@ const formatTime = (minutes, seconds) => {
 	return `➔ ${minutes <= 1 ? '1' : minutes}min`;
 };
 
-const Stop = ({ name, lineColor, status, stopTime }) => {
+const Stop = ({ id, name, lineColor, status, stopTime, setSelectedStopFunction }) => {
+	const handlePressIn = () => {
+		setSelectedStopFunction({ name: name, id: id });
+	};
 	return (
-		<View>
-			{stopTime && Object.keys(stopTime).length > 0
-				? stopTimeElement(name, stopTime, lineColor)
-				: status
-					? activeStopElement(name, status, lineColor)
-					: defaultStopElement(name)}
-		</View>
+		<Pressable onLongPress={handlePressIn}>
+			<View>
+				{stopTime && Object.keys(stopTime).length > 0
+					? stopTimeElement(name, stopTime, lineColor)
+					: status
+						? activeStopElement(name, status, lineColor)
+						: defaultStopElement(name)}
+			</View>
+		</Pressable>
 	);
 };
 
