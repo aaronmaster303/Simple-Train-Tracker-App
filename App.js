@@ -15,8 +15,8 @@ import { getColorsFromVehicleId } from './constants/Colors';
 import HorizontalLine from './components/HorizontalLine';
 
 const App = () => {
-	// const SERVER_BASE_URL = 'https://simple-train-tracker-app-server-production.up.railway.app';
-	const SERVER_BASE_URL = 'http://localhost:3000';
+	const SERVER_BASE_URL = 'https://simple-train-tracker-app-server-production.up.railway.app';
+	// const SERVER_BASE_URL = 'http://localhost:3000';
 
 	const [selectedLine, setSelectedLine] = useState('Green-E');
 	const [selectedTrain, setSelectedTrain] = useState('Green-E');
@@ -162,7 +162,7 @@ const App = () => {
 
 	const fetchStopTime = useCallback(async () => {
 		const url = `${SERVER_BASE_URL}/predictions?route=${selectedLine}&direction_id=${isInbound ? 1 : 0}&stop=${selectedStop.id}`;
-		console.log(url);
+		// console.log(url);
 		try {
 			const response = await fetch(url);
 			const data = await response.json();
