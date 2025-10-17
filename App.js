@@ -299,8 +299,13 @@ const App = () => {
 	}, [selectedBus]);
 
 	const setSelectedStopVehicle = (data) => {
-		isTrain ? setSelectedStopTrain(data) : setSelectedStopBus(data);
-		setSelectedStop(data);
+		if (JSON.stringify(data) === JSON.stringify(selectedStop)) {
+			isTrain ? setSelectedStopTrain() : setSelectedStopBus();
+			setSelectedStop();
+		} else {
+			isTrain ? setSelectedStopTrain(data) : setSelectedStopBus(data);
+			setSelectedStop(data);
+		}
 	};
 
 	if (isLoading) {
