@@ -24,9 +24,17 @@ const App = () => {
 	const [isTrain, setIsTrain] = useState(true);
 	const [isInbound, setIsInbound] = useState(false);
 
-	// ID: 70250, Name: Brigham Circle, text_id: place-brmnl
-	const [selectedStop, setSelectedStop] = useState({ name: 'Brigham Circle', id: 'place-brmnl' }); //Brigham Circle
-	const [selectedStopTime, setSelectedStopTime] = useState({ minutes: 0, seconds: 0 }); //Brigham Circle
+	const [selectedStop, setSelectedStop] = useState();
+	const [selectedStopTime, setSelectedStopTime] = useState();
+
+	const [selectedStopTrain, setSelectedStopTrain] = useState({
+		name: 'Brigham Circle',
+		id: 'place-brmnl',
+	});
+	const [selectedStopBus, setSelectedStopBus] = useState({
+		name: 'Huntington Ave @ Wigglesworth St',
+		id: '21317',
+	});
 
 	const [lines, setLines] = useState([]);
 	const [fetchError, setFetchError] = useState(false);
@@ -162,7 +170,6 @@ const App = () => {
 
 	const fetchStopTime = useCallback(async () => {
 		const url = `${SERVER_BASE_URL}/predictions?route=${selectedLine}&direction_id=${isInbound ? 1 : 0}&stop=${selectedStop.id}`;
-		// console.log(url);
 		try {
 			const response = await fetch(url);
 			const data = await response.json();
@@ -279,6 +286,23 @@ const App = () => {
 		}
 	}, [isLoading, selectedLine, isTrain, isInbound, fetchTrainLocations, fetchStopTime]);
 
+	useEffect(() => {
+		setSelectedStop(isTrain ? selectedStopTrain : selectedStopBus);
+	}, [isTrain, selectedStopTrain, selectedStopBus]);
+
+	useEffect(() => {
+		setSelectedStopTrain({});
+	}, [selectedTrain]);
+
+	useEffect(() => {
+		setSelectedStopBus({});
+	}, [selectedBus]);
+
+	const setSelectedStopVehicle = (data) => {
+		isTrain ? setSelectedStopTrain(data) : setSelectedStopBus(data);
+		setSelectedStop(data);
+	};
+
 	if (isLoading) {
 		return (
 			<SafeAreaProvider>
@@ -337,9 +361,9 @@ const App = () => {
 							stopList={stopList}
 							vehicleLocations={vehicleLocations}
 							lineColor={lineColor}
-							selectedStop={selectedStop}
-							selectedStopTime={selectedStopTime}
-							setSelectedStopFunction={setSelectedStop}
+							selectedStop={selectedStop ? selectedStop : {}}
+							selectedStopTime={selectedStopTime ? selectedStopTime : {}}
+							setSelectedStopFunction={setSelectedStopVehicle}
 						/>
 					)}
 					<HorizontalLine />
