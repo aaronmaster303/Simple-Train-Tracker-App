@@ -7,12 +7,13 @@ import AlertButton from './components/AlertButton';
 import AlertList from './components/AlertList';
 import Header from './components/Header';
 import HelpButton from './components/HelpButton';
+import HelpPage from './components/HelpPage';
 import LinePicker from './components/LinePicker';
 import Toggle from './components/Toggle';
 import StopList from './components/StopList';
 import Footer from './components/Footer';
 import DirectionPicker from './components/DirectionPicker';
-import { getColorsFromVehicleId } from './constants/Colors';
+import * as Colors from './constants/Colors';
 import HorizontalLine from './components/HorizontalLine';
 
 const App = () => {
@@ -40,7 +41,7 @@ const App = () => {
 	const [lines, setLines] = useState([]);
 	const [fetchError, setFetchError] = useState(false);
 	const [stopList, setStopList] = useState([]);
-	const [lineColor, setLineColor] = useState(getColorsFromVehicleId('Green-E'));
+	const [lineColor, setLineColor] = useState(Colors.getColorsFromVehicleId('Green-E'));
 	const [vehicleLocations, setVehicleLocations] = useState([]);
 	const [alerts, setAlerts] = useState([]);
 	const [showHelp, setShowHelp] = useState(false);
@@ -258,7 +259,7 @@ const App = () => {
 				fetchStopListBus(selectedLine, isInbound ? 1 : 0);
 			}
 
-			setLineColor(getColorsFromVehicleId(selectedLine));
+			setLineColor(Colors.getColorsFromVehicleId(selectedLine));
 
 			fetchAlerts();
 			setShowAlerts(false);
@@ -324,8 +325,22 @@ const App = () => {
 	if (showHelp) {
 		return (
 			<SafeAreaProvider>
-				<SafeAreaView style={styles.loadingContainer}>
-					<Text>Yo what's up</Text>
+				<SafeAreaView
+					style={[styles.safeArea, { backgroundColor: Colors.helpScreenColors.primary }]}>
+					<View style={styles.container}>
+						<View style={styles.headerContainer}>
+							<HelpButton showHelp={showHelp} toggleHelpFunction={setShowHelp} />
+							<Header />
+							<AlertButton
+								anyAlerts={false}
+								showAlerts={showAlerts}
+								toggleAlertsButtonFunction={setShowAlerts}
+							/>
+						</View>
+						<HorizontalLine />
+						<HelpPage />
+						<HorizontalLine />
+					</View>
 				</SafeAreaView>
 			</SafeAreaProvider>
 		);

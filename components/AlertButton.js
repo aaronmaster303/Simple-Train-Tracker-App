@@ -9,7 +9,7 @@ const AlertButton = ({ anyAlerts, showAlerts, toggleAlertsButtonFunction }) => {
 				{showAlerts ? (
 					<Ionicons name="close" size={24} color="red" />
 				) : (
-					<Ionicons name="warning" size={24} color="goldenrod" />
+					<Ionicons name="warning" size={24} color="#E8B923" />
 				)}
 			</Pressable>
 		);
