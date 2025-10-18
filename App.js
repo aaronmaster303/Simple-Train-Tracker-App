@@ -321,6 +321,16 @@ const App = () => {
 		);
 	}
 
+	if (showHelp) {
+		return (
+			<SafeAreaProvider>
+				<SafeAreaView style={styles.loadingContainer}>
+					<Text>Yo what's up</Text>
+				</SafeAreaView>
+			</SafeAreaProvider>
+		);
+	}
+
 	return (
 		<SafeAreaProvider>
 			<SafeAreaView style={[styles.safeArea, { backgroundColor: lineColor.lighter }]}>
@@ -328,12 +338,11 @@ const App = () => {
 					<View style={styles.headerContainer}>
 						<HelpButton showHelp={showHelp} toggleHelpFunction={setShowHelp} />
 						<Header />
-						{alerts.length > 0 && (
-							<AlertButton
-								showAlerts={showAlerts}
-								toggleAlertsButtonFunction={setShowAlerts}
-							/>
-						)}
+						<AlertButton
+							anyAlerts={alerts.length > 0}
+							showAlerts={showAlerts}
+							toggleAlertsButtonFunction={setShowAlerts}
+						/>
 					</View>
 					<LinePicker
 						selectedLine={selectedLine}
