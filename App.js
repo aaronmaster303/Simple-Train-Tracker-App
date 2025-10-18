@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AlertButton from './components/AlertButton';
 import AlertList from './components/AlertList';
 import Header from './components/Header';
+import HelpButton from './components/HelpButton';
 import LinePicker from './components/LinePicker';
 import Toggle from './components/Toggle';
 import StopList from './components/StopList';
@@ -42,6 +43,7 @@ const App = () => {
 	const [lineColor, setLineColor] = useState(getColorsFromVehicleId('Green-E'));
 	const [vehicleLocations, setVehicleLocations] = useState([]);
 	const [alerts, setAlerts] = useState([]);
+	const [showHelp, setShowHelp] = useState(false);
 	const [showAlerts, setShowAlerts] = useState(false);
 
 	const [isLoading, setIsLoading] = useState(true);
@@ -324,6 +326,7 @@ const App = () => {
 			<SafeAreaView style={[styles.safeArea, { backgroundColor: lineColor.lighter }]}>
 				<View style={styles.container}>
 					<View style={styles.headerContainer}>
+						<HelpButton showHelp={showHelp} toggleHelpFunction={setShowHelp} />
 						<Header />
 						{alerts.length > 0 && (
 							<AlertButton
@@ -404,7 +407,7 @@ const styles = StyleSheet.create({
 	},
 	headerContainer: {
 		flexDirection: 'row',
-		justifyContent: 'center',
+		justifyContent: 'space-between',
 		alignItems: 'center',
 		zIndex: 1000,
 		paddingBottom: 18,
