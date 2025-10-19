@@ -6,9 +6,10 @@ const HelpPage = () => {
 	return (
 		<ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
 			<View style={styles.overallDescription}>
+				<Text style={styles.overallHeading}>Welcome to the MBTA Train & Bus Tracker! </Text>
 				<Text style={styles.overallText}>
 					Stay connected to Boston’s public transit system with real-time train and bus
-					tracking. Here’s how to get the most accurate, live information.
+					tracking. Here’s how to get the most accurate, live information ↓
 				</Text>
 			</View>
 
@@ -101,8 +102,10 @@ const HelpPage = () => {
 				</Text>
 			</View>
 
-			<Text style={styles.note}>
-				Tap the X in the top-left corner to close this window and return to the main screen.
+			<Text style={styles.disclaimer}>
+				Disclaimer: All transit data in this app is provided directly by the MBTA. While
+				every effort is made to display accurate and up-to-date information, the developer
+				is not responsible for any errors, delays, or discrepancies in the data.
 			</Text>
 
 			<View style={styles.footerView}>
@@ -124,7 +127,7 @@ const HelpPage = () => {
 const styles = StyleSheet.create({
 	footerView: {
 		display: 'flex',
-		marginTop: 40,
+		marginTop: 30,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
@@ -158,11 +161,19 @@ const styles = StyleSheet.create({
 		lineHeight: 22,
 		marginBottom: 6,
 	},
+	overallHeading: {
+		fontSize: 18,
+		fontWeight: 'bold',
+		color: Colors.helpScreenColors.headerText,
+		textAlign: 'center',
+		marginBottom: 10,
+	},
 	overallText: {
 		fontSize: 17,
 		color: Colors.helpScreenColors.headerText,
 		lineHeight: 22,
 		textAlign: 'center',
+		marginBottom: 30,
 	},
 	note: {
 		fontSize: 14,
@@ -170,10 +181,14 @@ const styles = StyleSheet.create({
 		fontStyle: 'italic',
 		marginTop: 4,
 	},
+	disclaimer: {
+		fontSize: 14,
+		color: Colors.helpScreenColors.noteText,
+		fontStyle: 'italic',
+		marginTop: 40,
+		textAlign: 'center',
+	},
 	section: {
-		// display: 'flex',
-		// justifyContent: 'center',
-		// alignItems: 'center',
 		marginBottom: 26,
 	},
 });
