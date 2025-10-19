@@ -325,8 +325,7 @@ const App = () => {
 	if (showHelp) {
 		return (
 			<SafeAreaProvider>
-				<SafeAreaView
-					style={[styles.safeArea, { backgroundColor: Colors.helpScreenColors.primary }]}>
+				<SafeAreaView style={[styles.safeArea, { backgroundColor: lineColor.lighter }]}>
 					<View style={styles.container}>
 						<View style={styles.headerContainer}>
 							<HelpButton showHelp={showHelp} toggleHelpFunction={setShowHelp} />

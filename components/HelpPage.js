@@ -4,7 +4,7 @@ import * as Colors from '../constants/Colors';
 
 const HelpPage = () => {
 	return (
-		<ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+		<ScrollView contentContainerStyle={styles.scrollContent}>
 			<View style={styles.overallDescription}>
 				<Text style={styles.overallHeading}>Welcome to the MBTA Train & Bus Tracker! </Text>
 				<Text style={styles.overallText}>
@@ -133,9 +133,6 @@ const styles = StyleSheet.create({
 	},
 	privacyPolicyLink: { color: 'blue', fontSize: 12 },
 	copyright: { color: 'dimgray', fontSize: 12 },
-	scrollView: {
-		backgroundColor: Colors.helpScreenColors.background,
-	},
 	scrollContent: {
 		paddingHorizontal: 4,
 		paddingTop: 30,
