@@ -138,7 +138,8 @@ const styles = StyleSheet.create({
 	},
 	scrollContent: {
 		paddingHorizontal: 4,
-		paddingVertical: 25,
+		paddingTop: 30,
+		paddingBottom: 10,
 	},
 	overallDescription: {
 		marginBottom: 40,
@@ -160,6 +161,7 @@ const styles = StyleSheet.create({
 		color: Colors.helpScreenColors.bodyText,
 		lineHeight: 22,
 		marginBottom: 6,
+		textAlign: 'justify',
 	},
 	overallHeading: {
 		fontSize: 18,
@@ -176,10 +178,12 @@ const styles = StyleSheet.create({
 		marginBottom: 30,
 	},
 	note: {
-		fontSize: 14,
+		fontSize: 13,
 		color: Colors.helpScreenColors.noteText,
 		fontStyle: 'italic',
 		marginTop: 4,
+		marginBottom: 6,
+		textAlign: 'center',
 	},
 	disclaimer: {
 		fontSize: 14,
