@@ -58,6 +58,10 @@ The app polls a Railway-hosted backend every 2.5 seconds for vehicle positions v
 
 Line colors are derived from the selected route ID and applied globally as a theme — background, buttons, and accent colors all update together.
 
+## Related
+
+**Web version:** A companion web app with the same functionality is available at [personal-train-tracker.netlify.app](https://personal-train-tracker.netlify.app/) ([source](https://github.com/aaronmaster303/Personal-Train-Tracker)) — built with vanilla HTML/CSS/JS and used by 300+ active users.
+
 ## Backend
 
 The server that powers this app is open source: [Simple-Train-Tracker-App-Server](https://github.com/aaronmaster303/Simple-Train-Tracker-App-Server)
