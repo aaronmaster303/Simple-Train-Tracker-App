@@ -1,28 +1,21 @@
 import { StyleSheet } from 'react-native';
-import { TouchableOpacity, Text } from 'react-native';
+import { Pressable } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-const AlertButton = ({ showAlerts, toggleAlertsButtonFunction }) => {
-  return (
-    <TouchableOpacity style={[styles.main]} onPress={() => toggleAlertsButtonFunction(!showAlerts)}>
-      {showAlerts ? (
-        <Text style={styles.buttonText}>❌</Text>
-      ) : (
-        <Text style={styles.buttonText}>⚠️</Text>
-      )}
-    </TouchableOpacity>
-  );
+const AlertButton = ({ anyAlerts, showAlerts, toggleAlertsButtonFunction }) => {
+	if (anyAlerts) {
+		return (
+			<Pressable onPress={() => toggleAlertsButtonFunction(!showAlerts)}>
+				{showAlerts ? (
+					<Ionicons name="close" size={24} color="red" />
+				) : (
+					<Ionicons name="warning" size={24} color="#E8B923" />
+				)}
+			</Pressable>
+		);
+	}
+
+	return <Ionicons name="alert" size={24} color="white" />;
 };
-
-const styles = StyleSheet.create({
-  main: {
-    position: 'absolute',
-    right: 14,
-    top: 6,
-    zIndex: 2,
-  },
-  buttonText: {
-    fontSize: 18,
-  },
-});
 
 export default AlertButton;
