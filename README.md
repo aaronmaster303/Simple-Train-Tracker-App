@@ -10,7 +10,7 @@
 
 ## Screenshots
 
-> _Add screenshots here — e.g., the stop list view, alert panel, and line picker._
+<img width="1964" height="1031" alt="image" src="https://github.com/user-attachments/assets/62350289-c5a2-41e7-8cb1-19fd5363066a" />
 
 ## Features
 
