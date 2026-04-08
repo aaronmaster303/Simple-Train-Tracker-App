@@ -1,4 +1,4 @@
-# Simple Train Tracker
+# MBTA Train & Bus Tracker
 
 **A real-time MBTA transit tracker for Boston trains and buses, built with React Native and Expo.**
 
